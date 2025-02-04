@@ -11,7 +11,7 @@ methods = {'contour', 'medialAxis', 'area'};
 %     case 'taper'
 %         whichtype = 'tap';
 % end
-whichtype='par';
+whichtype='mir';
 savefolder = ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/',whichtype,'filter/'];%to save model outputs
 
 for imgNum = 1:73000
