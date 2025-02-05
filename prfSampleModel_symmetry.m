@@ -12,14 +12,14 @@
 %   uses files created by: nsdStim.m
 %   creates files used by: regressPrfSplit.m
 
-function prfSampleModel_symmetry(isub,visualRegion)
+function prfSampleModel_symmetry(isub,visualRegion, method)
 % cd '/home/hanseohe/Documents/GitHub/nsdOtopy';
 delete(gcp('nocreate'));
 g=gcp
 distcomp.feature( 'LocalUseMpiexec', false ); % https://www.mathworks.com/matlabcentral/answers/447051-starting-matlab-pool-hangs-in-2018b
 
 % delete(gcp('nocreate'));
-% gg=parcluster('local'); 
+% gg=parcluster('local'); prfSampleModel_symmetry(isub,visualRegion)
 % gg.NumWorkers=40; 
 % g=parpool(gg,40)
 % distcomp.feature( 'LocalUseMpiexec', false); % https://www.mathworks.com/matlabcentral/answers/447051-starting-matlab-pool-hangs-in-2018b
@@ -70,7 +70,7 @@ x = -(backgroundSize*imgScaling)/2+0.5:(backgroundSize*imgScaling)/2-0.5;
 y = -(backgroundSize*imgScaling)/2+0.5:(backgroundSize*imgScaling)/2-0.5;
 [X,Y] = meshgrid(x,-y);%flip up-down
 
-orifolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/parfilter/';%to save model outputs
+featurefolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/parfilter/';%to save model outputs
 betasfolder = ['/bwdata/NSDData/nsddata/ppdata/subj0' num2str(isub) '/func1pt8mm/'];
 angFile = fullfile(betasfolder,'prf_angle.nii.gz');
 eccFile = fullfile(betasfolder,'prf_eccentricity.nii.gz');
@@ -119,8 +119,8 @@ for roinum=1:length(rois)
     parfor iimg=1:length(allImgs)
         ['sub: ' num2str(isub) ', roi: ' num2str(iroi) ', image: ' num2str(iimg)]
         imgNum = allImgs(iimg);
-        orifilename = ['parImg' num2str(imgNum) '.mat'];
-        data = load(fullfile(orifolder, orifilename),'modelOri');
+        featurefilename = ['parImg' num2str(imgNum) '.mat'];
+        data = load(fullfile(featurefolder, featurefilename),'model');
         imgPrfSampleLevOri = zeros(nvox,numLevels,numFeatures);
         %loop through voxels
         for ivox=1:nvox
@@ -132,7 +132,7 @@ for roinum=1:length(rois)
             for ilev = 1:numLevels
                 voxPrfSampleOri = zeros(numFeatures,1);
                 for iori=1:numFeatures
-                    temp = data.modelOri(iori,:,:);
+                    temp = data.model.({method})(iori,:,:);
                     voxPrfSampleOri(iori) = temp(:)'*G(:);
                 end
                 voxPrfSampleLevOri(ilev,:) = voxPrfSampleOri;
