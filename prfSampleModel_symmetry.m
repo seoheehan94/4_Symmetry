@@ -119,7 +119,7 @@ for roinum=1:length(rois)
     parfor iimg=1:length(allImgs)
         ['sub: ' num2str(isub) ', roi: ' num2str(iroi) ', image: ' num2str(iimg)]
         imgNum = allImgs(iimg);
-        orifilename = ['oriImg' num2str(imgNum) '.mat'];
+        orifilename = ['parImg' num2str(imgNum) '.mat'];
         data = load(fullfile(orifolder, orifilename),'modelOri');
         imgPrfSampleLevOri = zeros(nvox,numLevels,numFeatures);
         %loop through voxels
