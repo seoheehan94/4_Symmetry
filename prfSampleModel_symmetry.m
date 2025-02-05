@@ -121,6 +121,7 @@ for roinum=1:length(rois)
         imgNum = allImgs(iimg);
         featurefilename = ['parImg' num2str(imgNum) '.mat'];
         data = load(fullfile(featurefolder, featurefilename),'model');
+        data.model.(method) = reshape(data.model.(method), [1, 512, 512]);
         imgPrfSampleLevOri = zeros(nvox,numLevels,numFeatures);
         %loop through voxels
         for ivox=1:nvox
@@ -132,7 +133,7 @@ for roinum=1:length(rois)
             for ilev = 1:numLevels
                 voxPrfSampleOri = zeros(numFeatures,1);
                 for iori=1:numFeatures
-                    temp = data.model.({method})(iori,:,:);
+                    temp = data.model.(method)(iori,:,:);
                     voxPrfSampleOri(iori) = temp(:)'*G(:);
                 end
                 voxPrfSampleLevOri(ilev,:) = voxPrfSampleOri;
