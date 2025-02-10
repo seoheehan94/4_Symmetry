@@ -7,7 +7,7 @@ addpath(genpath('/home/hanseohe/Documents/GitHub/3rdParty'))
             prfSampleModel_symmetry(sub,1, methods{2});
     end
     for sub = 1:8
-            fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,2, methods{3});
+            fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,1, methods{3});
             prfSampleModel_symmetry(sub,1, methods{3});
     end
 
