@@ -85,6 +85,12 @@ r2Data = niftiread(r2file);
 visualRoisFile = fullfile(betasfolder,'roi/prf-visualrois.nii.gz');%V1v, V1d, V2v, V2d, V3v, V3d, and hV4
 visRoiData = niftiread(visualRoisFile);
 
+placesRoisFile = fullfile(betasfolder,'roi/floc-places.nii.gz'); %OPA, PPA, RSC 
+placeRoiData = niftiread(placesRoisFile);
+visRoiData(placeRoiData == 1) = 8;
+visRoiData(placeRoiData == 2) = 9;
+visRoiData(placeRoiData == 3) = 10;
+
 tic
 %%
 
