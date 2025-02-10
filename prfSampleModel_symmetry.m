@@ -16,6 +16,7 @@ function prfSampleModel_symmetry(isub,visualRegion, method)
 % cd '/home/hanseohe/Documents/GitHub/nsdOtopy';
 delete(gcp('nocreate'));
 g=gcp
+g=parpool(gg,10)
 distcomp.feature( 'LocalUseMpiexec', false ); % https://www.mathworks.com/matlabcentral/answers/447051-starting-matlab-pool-hangs-in-2018b
 
 % delete(gcp('nocreate'));
