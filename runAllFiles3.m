@@ -40,7 +40,7 @@ curmethod = 2;
 % end
 
 %% getVoxPref
-for sub = 1:8
-    fprintf('%s. %d. %d ...\n','getVoxPref_regress',sub, 1);
-    getVoxPref_regress(sub,4, 1);
-end
+% for sub = 1:8
+%     fprintf('%s. %d. %d ...\n','getVoxPref_regress',sub, 1);
+%     getVoxPref_regress(sub,4, 1);
+% end
