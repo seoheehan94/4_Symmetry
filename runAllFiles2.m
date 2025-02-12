@@ -1,14 +1,13 @@
 %% prfSampleModel
 methods = {'contour', 'medialAxis', 'area'};
 
-addpath(genpath('/home/hanseohe/Documents/GitHub/3rdParty'))
-    for sub = 5:8
-            fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,1, methods{2});
-            prfSampleModel_symmetry(sub,1, methods{2});
-    end
+% addpath(genpath('/home/hanseohe/Documents/GitHub/3rdParty'))
+  curmethod = 2;
     for sub = 1:8
-            fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,1, methods{3});
-            prfSampleModel_symmetry(sub,1, methods{3});
+        for roi = 3:4
+            fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,roi, methods{curmethod});
+            prfSampleModel_symmetry(sub,roi, methods{curmethod});
+        end
     end
 
 %% regressPrfSplit
