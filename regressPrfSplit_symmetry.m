@@ -12,7 +12,7 @@
 %   uses files created by: prfSampleModel.m, prfSampleModel_synth.m
 %   creates files used by: getVoxPref.m
 
-function regressPrfSplit_symmetry(isub,visualRegions)
+function regressPrfSplit_symmetry(isub,visualRegions, method)
 % addpath(genpath('/home/hanseohe/Documents/GitHub/nsdOtopy'));
 
 tic
@@ -23,7 +23,7 @@ nsessions=nsessionsSub(isub);
 nsplits=2;
 bandpass = 1; bandMin = 1; bandMax = 1;
 
-boxfolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Length/prfsample_Len/';
+boxfolder = '/bwdata/NSDData/Seohee/Symmetry/prfsample_Par/';
 betasfolder = ['/bwdata/NSDData/nsddata_betas/ppdata/subj0' num2str(isub) '/func1pt8mm/betas_fithrf_GLMdenoise_RR/'];
 % stimfilename = fullfile(folder,'nsdsynthetic_colorstimuli_subj01.hdf5');
 nsdfolder = '/bwdata/NSDData/nsddata/experiments/nsd/';
@@ -41,19 +41,19 @@ visRoiData = visRoiData(:);
 
 for visualRegion=visualRegions
     
-    load(fullfile(boxfolder,['prfSampleStim_len_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevLen',...
-        'rois','allImgs','numLevels','numLengths','interpImgSize','backgroundSize','pixPerDeg',...
+    load(fullfile(boxfolder,['prfSampleStim_par_', method,'v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
+        'rois','allImgs','numLevels','numFeatures','interpImgSize','backgroundSize','pixPerDeg',...
         'roiPrf');
     %if prf sampling was done with the nonlinear CSS prf, then we want to
     %define the weights for the constrained model as a sum of the
     %orientation model across orientations:
      for roinum=1:length(rois)
-         prfSampleLev{roinum} = squeeze(sum(prfSampleLevLen{roinum},4));
+         prfSampleLev{roinum} = squeeze(sum(prfSampleLevOri{roinum},4));
      end
     
     if bandpass
         for roinum=1:length(rois)
-            prfSampleLevLen{roinum} = prfSampleLevLen{roinum}(:,:,bandMin:bandMax,:);
+            prfSampleLevOri{roinum} = prfSampleLevOri{roinum}(:,:,bandMin:bandMax,:);
              prfSampleLev{roinum} = prfSampleLev{roinum}(:,:,bandMin:bandMax);
         end
         numLevels = bandMax-bandMin+1;
@@ -109,13 +109,13 @@ for visualRegion=visualRegions
         voxResidual{roinum} = NaN(nsplits, nvox(roinum),maxNumTrials);
         voxLenResidualSplit{roinum} = NaN(nsplits, nvox(roinum),maxNumTrials);
         voxResidualSplit{roinum} = NaN(nsplits, nvox(roinum),maxNumTrials);
-        voxLenCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels*numLengths+1);
+        voxLenCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels*numFeatures+1);
         voxCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels+1);
-        voxPredLenCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels*numLengths+1);
+        voxPredLenCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels*numFeatures+1);
         voxPredCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels+1);
-        voxLenPredLenCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels*numLengths+1);
-        voxResidLenCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels*numLengths+1);
-        voxLenResidLenCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels*numLengths+1);
+        voxLenPredLenCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels*numFeatures+1);
+        voxResidLenCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels*numFeatures+1);
+        voxLenResidLenCoef{roinum} = zeros(nsplits, nvox(roinum),numLevels*numFeatures+1);
         
         %get model coefficients for each voxel, within each split
         for isplit=1:nsplits
@@ -128,8 +128,8 @@ for visualRegion=visualRegions
                 voxPrfSample(:,end+1) = ones;
                 voxCoef{roinum}(isplit,ivox,:) = voxPrfSample\voxBetas;
                 
-                voxPrfLenSample = squeeze(prfSampleLevLen{roinum}(imgNum(imgTrials>0),ivox,:,:));
-                voxPrfLenSample = reshape(voxPrfLenSample,[],numLevels*numLengths);
+                voxPrfLenSample = squeeze(prfSampleLevOri{roinum}(imgNum(imgTrials>0),ivox,:,:));
+                voxPrfLenSample = reshape(voxPrfLenSample,[],numLevels*numFeatures);
                 
                 %add constant predictor
                 voxPrfLenSample(:,end+1) = ones;
@@ -188,8 +188,8 @@ for visualRegion=visualRegions
                 voxPrfSample = squeeze(prfSampleLev{roinum}(imgNum(imgTrials>0),ivox,:));
                 %add constant predictor
                 voxPrfSample(:,end+1) = ones;
-                voxPrfLenSample = squeeze(prfSampleLevLen{roinum}(imgNum(imgTrials>0),ivox,:,:));
-                voxPrfLenSample = reshape(voxPrfLenSample,[],numLevels*numLengths);
+                voxPrfLenSample = squeeze(prfSampleLevOri{roinum}(imgNum(imgTrials>0),ivox,:,:));
+                voxPrfLenSample = reshape(voxPrfLenSample,[],numLevels*numFeatures);
                 
                 %add constant predictor
                 voxPrfLenSample(:,end+1) = ones;
@@ -320,10 +320,10 @@ for visualRegion=visualRegions
 %     synth.voxOriResidual = voxOriResidual;
     
     %% SAVE RESULTS
-    bandpassStr = ['_bandpass' num2str(bandMin) 'to' num2str(bandMax)];
-    save(fullfile(boxfolder,['regressPrfSplit' bandpassStr '_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']), ...
+    % bandpassStr = ['_bandpass' num2str(bandMin) 'to' num2str(bandMax)];
+    save(fullfile(boxfolder,['regressPrfSplit_', method, '_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']), ...
         'nsd',...
-        'numLevels', 'numLengths','rois','nvox','roiPrf','nsplits');
+        'numLevels', 'numFeatures','rois','nvox','roiPrf','nsplits');
     toc
 end
 
