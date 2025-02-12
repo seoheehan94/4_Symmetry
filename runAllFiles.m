@@ -13,12 +13,20 @@ methods = {'contour', 'medialAxis', 'area'};
 % % end
 
 curmethod = 2;
-    for sub = 4:8
-        for roi = 2
+    % for sub = 4:8
+    %     for roi = 2
+    %         fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,roi, methods{curmethod});
+    %         prfSampleModel_symmetry(sub,roi, methods{curmethod});
+    %     end
+    % end
+
+    for sub = 5:8
+        for roi = 5:7
             fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,roi, methods{curmethod});
             prfSampleModel_symmetry(sub,roi, methods{curmethod});
         end
     end
+
 
 %% regressPrfSplit
 % for sub = 1:8
