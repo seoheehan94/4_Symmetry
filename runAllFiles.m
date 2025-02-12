@@ -2,15 +2,15 @@
 methods = {'contour', 'medialAxis', 'area'};
 
 % addpath(genpath('/home/hanseohe/Documents/GitHub/stimulusVignetting'))
-curmethod = 1;
-% for curmethod = 1:3
-    for sub = 7:8
-        for roi = 5:7
-            fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,roi, methods{curmethod});
-            prfSampleModel_symmetry(sub,roi, methods{curmethod});
-        end
-    end
-% end
+% curmethod = 1;
+% % for curmethod = 1:3
+%     for sub = 7:8
+%         for roi = 5:7
+%             fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,roi, methods{curmethod});
+%             prfSampleModel_symmetry(sub,roi, methods{curmethod});
+%         end
+%     end
+% % end
 
 curmethod = 2;
     for sub = 4:8
