@@ -14,7 +14,7 @@ curmethod = 1;
 
 curmethod = 2;
     for sub = 1:8
-        for roi = 1:2
+        for roi = 2
             fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,roi, methods{curmethod});
             prfSampleModel_symmetry(sub,roi, methods{curmethod});
         end
