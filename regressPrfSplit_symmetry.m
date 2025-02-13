@@ -14,6 +14,7 @@
 
 function regressPrfSplit_symmetry(isub,visualRegions, method)
 % addpath(genpath('/home/hanseohe/Documents/GitHub/nsdOtopy'));
+addpath('/home/hanseohe/Documents/GitHub/2_Orientation_Tuning/EXP2/model_computation')
 
 tic
 
@@ -41,7 +42,7 @@ visRoiData = visRoiData(:);
 
 for visualRegion=visualRegions
     
-    load(fullfile(boxfolder,['prfSampleStim_par_', method,'v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
+    load(fullfile(boxfolder,['prfSampleStim_par_', method,'_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
         'rois','allImgs','numLevels','numFeatures','interpImgSize','backgroundSize','pixPerDeg',...
         'roiPrf');
     %if prf sampling was done with the nonlinear CSS prf, then we want to
