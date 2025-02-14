@@ -1,4 +1,4 @@
-function contourImageWithRating = mapMATtoTangentialLine(skeletalBranches, imgLD, skeletonImageWithRating)
+function contourImageWithRating = mapMATtoContourFullTangential(skeletalBranches, imgLD, skeletonImageWithRating)
 % Maps MAT-based scores along tangential lines from medial axis to contour
 %
 % Input:
