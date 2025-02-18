@@ -23,7 +23,7 @@
 %         end
 % 
 %     end
-    command = 'scp -r /bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/parfilter/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/';
+    command = 'scp -r /bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/mirfilter/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/';
     system(command);
 
     % movefile([folderName, '/*'], 'pyramid/')
