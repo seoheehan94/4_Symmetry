@@ -24,7 +24,7 @@ nsessions=nsessionsSub(isub);
 nsplits=2;
 bandpass = 1; bandMin = 1; bandMax = 1;
 
-boxfolder = '/bwdata/NSDData/Seohee/Symmetry/prfsample_Par/';
+boxfolder = '/bwdata/NSDData/Seohee/Symmetry/prfsample_Mir/';
 betasfolder = ['/bwdata/NSDData/nsddata_betas/ppdata/subj0' num2str(isub) '/func1pt8mm/betas_fithrf_GLMdenoise_RR/'];
 % stimfilename = fullfile(folder,'nsdsynthetic_colorstimuli_subj01.hdf5');
 nsdfolder = '/bwdata/NSDData/nsddata/experiments/nsd/';
@@ -42,7 +42,7 @@ visRoiData = visRoiData(:);
 
 for visualRegion=visualRegions
     visualRegion
-    load(fullfile(boxfolder,['prfSampleStim_par_', method,'_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
+    load(fullfile(boxfolder,['prfSampleStim_mir_', method,'_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
         'rois','allImgs','numLevels','numFeatures','interpImgSize','backgroundSize','pixPerDeg',...
         'roiPrf');
     %if prf sampling was done with the nonlinear CSS prf, then we want to
