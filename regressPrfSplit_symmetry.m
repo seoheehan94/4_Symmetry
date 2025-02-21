@@ -13,7 +13,7 @@
 %   creates files used by: getVoxPref.m
 
 function regressPrfSplit_symmetry(isub,visualRegions,type,method)
-clear all;
+clearvars -except isub visualRegions type method
 % addpath(genpath('/home/hanseohe/Documents/GitHub/nsdOtopy'));
 addpath('/home/hanseohe/Documents/GitHub/2_Orientation_Tuning/EXP2/model_computation')
 
