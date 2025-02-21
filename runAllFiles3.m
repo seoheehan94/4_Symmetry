@@ -19,26 +19,32 @@ methods = {'contour', 'medialAxis', 'area'};
     % 
 %% regressPrfSplit
 for sub = 1:8
-fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'medialAxis');
-regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'par', 'medialAxis');
+    for roi =1:7
+    fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub,'medialAxis');
+    regressPrfSplit_symmetry(sub, roi, 'par', 'medialAxis');
+    end
 end
 
 for sub = 1:8
-fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'area');
-regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'par', 'area');
+    for roi =1:7
+    fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub,'area');
+    regressPrfSplit_symmetry(sub, roi, 'par', 'area');
+    end
 end
 
 for sub = 1:8
-fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'medialAxis');
-regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'mir', 'medialAxis');
+    for roi =1:7
+    fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub,'medialAxis');
+    regressPrfSplit_symmetry(sub, roi, 'mir', 'medialAxis');
+    end
 end
 
 for sub = 1:8
-fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'area');
-regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'mir', 'area');
+    for roi =1:7
+    fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub,'area');
+    regressPrfSplit_symmetry(sub, roi, 'mir', 'area');
+    end
 end
-
-
 %% getVoxPref
 % for sub = 1:8
 %     fprintf('%s. %d. %d ...\n','getVoxPref_symmetry',sub, 7);
