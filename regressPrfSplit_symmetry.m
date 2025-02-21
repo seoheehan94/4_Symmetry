@@ -12,7 +12,7 @@
 %   uses files created by: prfSampleModel.m, prfSampleModel_synth.m
 %   creates files used by: getVoxPref.m
 
-function regressPrfSplit_symmetry(isub,visualRegions, method)
+function regressPrfSplit_symmetry(isub,visualRegions,type,method)
 % addpath(genpath('/home/hanseohe/Documents/GitHub/nsdOtopy'));
 addpath('/home/hanseohe/Documents/GitHub/2_Orientation_Tuning/EXP2/model_computation')
 
@@ -24,7 +24,7 @@ nsessions=nsessionsSub(isub);
 nsplits=2;
 bandpass = 1; bandMin = 1; bandMax = 1;
 
-boxfolder = '/bwdata/NSDData/Seohee/Symmetry/prfsample_Mir/';
+boxfolder = ['/bwdata/NSDData/Seohee/Symmetry/prfsample_',type,'/'];
 betasfolder = ['/bwdata/NSDData/nsddata_betas/ppdata/subj0' num2str(isub) '/func1pt8mm/betas_fithrf_GLMdenoise_RR/'];
 % stimfilename = fullfile(folder,'nsdsynthetic_colorstimuli_subj01.hdf5');
 nsdfolder = '/bwdata/NSDData/nsddata/experiments/nsd/';
@@ -42,7 +42,7 @@ visRoiData = visRoiData(:);
 
 for visualRegion=visualRegions
     visualRegion
-    load(fullfile(boxfolder,['prfSampleStim_mir_', method,'_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
+    load(fullfile(boxfolder,['prfSampleStim_',type '_', method,'_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
         'rois','allImgs','numLevels','numFeatures','interpImgSize','backgroundSize','pixPerDeg',...
         'roiPrf');
     %if prf sampling was done with the nonlinear CSS prf, then we want to
@@ -137,8 +137,17 @@ for visualRegion=visualRegions
                 
                 %add constant predictor
                 voxPrfFeatSample(:,end+1) = ones;
-                voxFeatCoef{roinum}(isplit,ivox,:) = voxPrfFeatSample\voxBetas;%check vox 144 in first ROI
+
+                rank_X = rank(voxPrfFeatSample);
+                if rank_X < size(voxPrfFeatSample, 2)
+                    fprintf('isplit: %d, ivox: %d\n', isplit, ivox);
+                    warning('Design matrix is rank-deficient.');
+                    voxFeatCoef{roinum}(isplit,ivox,:) = [NaN;NaN];
+                else
+                    voxFeatCoef{roinum}(isplit,ivox,:) = voxPrfFeatSample\voxBetas;%check vox 144 in first ROI
+                end
                 
+
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 %regress vignetting predicted timecourse with orientation model
