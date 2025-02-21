@@ -19,8 +19,8 @@ methods = {'contour', 'medialAxis', 'area'};
     % 
 %% regressPrfSplit
 for sub = 1:8
-fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'area');
-regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'par', 'area');
+fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'medialAxis');
+regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'par', 'medialAxis');
 end
 
 %% getVoxPref
