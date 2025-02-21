@@ -23,6 +23,22 @@ fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'medialAxis');
 regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'par', 'medialAxis');
 end
 
+for sub = 1:8
+fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'area');
+regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'par', 'area');
+end
+
+for sub = 1:8
+fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'medialAxis');
+regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'mir', 'medialAxis');
+end
+
+for sub = 1:8
+fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'area');
+regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'mir', 'area');
+end
+
+
 %% getVoxPref
 % for sub = 1:8
 %     fprintf('%s. %d. %d ...\n','getVoxPref_symmetry',sub, 7);

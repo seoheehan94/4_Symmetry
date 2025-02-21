@@ -13,6 +13,7 @@
 %   creates files used by: getVoxPref.m
 
 function regressPrfSplit_symmetry(isub,visualRegions,type,method)
+clear all;
 % addpath(genpath('/home/hanseohe/Documents/GitHub/nsdOtopy'));
 addpath('/home/hanseohe/Documents/GitHub/2_Orientation_Tuning/EXP2/model_computation')
 
@@ -106,7 +107,7 @@ for visualRegion=visualRegions
     pearsonRfeat = cell(length(rois),1);
     pearsonR = cell(length(rois),1);
     
-    
+    keyboard;
     for roinum=1:length(rois)
         nvox(roinum) = size(roiBetas{roinum},1);
         voxFeatResidual{roinum} = NaN(nsplits, nvox(roinum),maxNumTrials);

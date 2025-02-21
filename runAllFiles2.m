@@ -19,10 +19,9 @@ regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'par', 'contour');
 end
 
 for sub = 1:8
-fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub, 'medialAxis');
-regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'par', 'medialAxis');
+fprintf('%s. %d.  %s ...\n','regressPrfSplit',sub,'contour');
+regressPrfSplit_symmetry(sub, [1,2,3,4,5,6,7], 'mir', 'contour');
 end
-
 
 
 
