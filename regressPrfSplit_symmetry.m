@@ -107,7 +107,6 @@ for visualRegion=visualRegions
     pearsonRfeat = cell(length(rois),1);
     pearsonR = cell(length(rois),1);
     
-    keyboard;
     for roinum=1:length(rois)
         nvox(roinum) = size(roiBetas{roinum},1);
         voxFeatResidual{roinum} = NaN(nsplits, nvox(roinum),maxNumTrials);
