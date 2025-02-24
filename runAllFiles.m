@@ -12,20 +12,20 @@ methods = {'contour', 'medialAxis', 'area'};
 %     end
 % % end
 
-curmethod = 2;
-    % for sub = 4:8
-    %     for roi = 2
-    %         fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,roi, methods{curmethod});
-    %         prfSampleModel_symmetry(sub,roi, methods{curmethod});
-    %     end
-    % end
-
-    for sub = 6:8
-        for roi = 5:7
-            fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,roi, methods{curmethod});
-            prfSampleModel_symmetry(sub,roi, methods{curmethod});
-        end
-    end
+% curmethod = 2;
+%     % for sub = 4:8
+%     %     for roi = 2
+%     %         fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,roi, methods{curmethod});
+%     %         prfSampleModel_symmetry(sub,roi, methods{curmethod});
+%     %     end
+%     % end
+% 
+%     for sub = 6:8
+%         for roi = 5:7
+%             fprintf('%s. %d. %d. %s ...\n','prfSampleModel',sub,roi, methods{curmethod});
+%             prfSampleModel_symmetry(sub,roi, methods{curmethod});
+%         end
+%     end
 
 
 %% regressPrfSplit
@@ -52,7 +52,7 @@ curmethod = 2;
 % end
 
 %% getVoxPref
-% for sub = 1:8
-%     fprintf('%s. %d. %d ...\n','getVoxPref_regress',sub, 1);
-%     getVoxPref_regress(sub,4, 1);
-% end
+for sub = 1:8
+    fprintf('%s. %d. %d. %s ...\n','getVoxPref_symmetry',sub, 7, 'contour');
+    getVoxPref_symmetry(sub,7,'contour')
+end

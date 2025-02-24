@@ -13,10 +13,10 @@
 %   creates files used by: fig$$.m
 
 
-function getVoxPref_symmetry(isub,numregions, method)
+function getVoxPref_symmetry(isub,numregions, type, method)
 
 %methods = {'contour', 'medialAxis', 'area'};
-curPrf = '/bwdata/NSDData/Seohee/Symmetry/prfsample_Par/';
+curPrf = ['/bwdata/NSDData/Seohee/Symmetry/prfsample_',type,'/'];
 
 % mrQuit
 close all
