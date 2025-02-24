@@ -3,6 +3,7 @@
 %   uses files created by: regressPrfSplit.m
 %   creates files used by:
 clear all;
+type = 'par' %'par', 'medialAxis', 
 savefolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/brainVolume_Par';
 roiNames = {'V1v','V1d','V2v','V2d','V3v','V3d','hV4','OPA','PPA','RSC'};
 combinedRoiNames = {'V1','V2','V3','hV4','OPA','PPA','RSC'};
@@ -135,23 +136,21 @@ for method = 1:length(methods)
 end
 
 negativeCount = struct;
-totalCount = struct;
 for method = 1:length(methods)
-    negativeCount_sub.(methods{method}) = {};
-    totalCount_sub.(methods{method}) = {};
-    for roi = 1:8
+    negativeCount.(methods{method}) = [];
+    for roi = 1:7
         curRoiNegativeSum =0;
         curRoiTotalSum =0;
         for isub = 1:8
-            curRoiNegativeSum = curRoiNegativeSum+negativeCount_sub.(methods{method}{isub}(roi));
-            curRoiTotalSum = curRoiTotalSum+totalCount_sub.(methods{method}{isub}(roi));
+            curRoiNegativeSum = curRoiNegativeSum+negativeCount_sub.(methods{method}){isub}(roi);
+            curRoiTotalSum = curRoiTotalSum+totalCount_sub.(methods{method}){isub}(roi);
         end
-
-
+        negativeCount.(methods{method})(1,roi) = curRoiNegativeSum;
+        negativeCount.(methods{method})(2,roi) = curRoiTotalSum;
     end
-
 end
 
+save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses/', 'negativeR2Count.mat']), "negativeCount")
 %% make a brain volume
 
 for method = 1:3

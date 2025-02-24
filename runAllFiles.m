@@ -53,6 +53,6 @@ methods = {'contour', 'medialAxis', 'area'};
 
 %% getVoxPref
 for sub = 1:8
-    fprintf('%s. %d. %d. %s ...\n','getVoxPref_symmetry',sub, 7, 'contour');
-    getVoxPref_symmetry(sub,7,'par', 'contour')
+    fprintf('%s. %d. %d. %s ...\n','getVoxPref_symmetry',sub, 7, 'area');
+    getVoxPref_symmetry(sub,7,'par', 'area')
 end

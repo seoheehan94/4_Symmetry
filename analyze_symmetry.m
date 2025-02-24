@@ -3,11 +3,12 @@
 %   uses files created by: regressPrfSplit.m
 %   creates files used by:
 clear all;
-savefolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/brainVolume_Par';
+type = 'par'; %'par', 'medialAxis', 'area'
+savefolder = ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/brainVolume_', type];
 roiNames = {'V1v','V1d','V2v','V2d','V3v','V3d','hV4','OPA','PPA','RSC'};
 combinedRoiNames = {'V1','V2','V3','hV4','OPA','PPA','RSC'};
 methods = {'contour', 'medialAxis', 'area'};
-curPrf = '/bwdata/NSDData/Seohee/Symmetry/prfsample_Par/';
+curPrf = ['/bwdata/NSDData/Seohee/Symmetry/prfsample_' type, '/'];
 
 %% 1.  mean R2, AIC, BIC %%
 totalR2FeatSplit = struct;
