@@ -21,7 +21,7 @@ for sub = 1:8
 end
 
 for sub = 1:8
-    for roi =1:7
+    for roi =5:7
     fprintf('%s. %d. %d. %s ...\n','regressPrfSplit',sub,roi,'area');
     regressPrfSplit_symmetry(sub, roi, 'par', 'area');
     end
