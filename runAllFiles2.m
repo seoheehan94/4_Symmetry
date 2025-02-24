@@ -20,10 +20,10 @@ methods = {'contour', 'medialAxis', 'area'};
 %     end
 % end
 
-for sub = 1:8
-    for roi =5:7
-    fprintf('%s. %d. %d. %s ...\n','regressPrfSplit',sub,roi,'area');
-    regressPrfSplit_symmetry(sub, roi, 'par', 'area');
+for sub = 7:8
+    for roi =1:7
+    fprintf('%s. %d. %d. %s ...\n','regressPrfSplit',sub,roi,'medialAxis');
+    regressPrfSplit_symmetry(sub, roi, 'par', 'medialAxis');
     end
 end
 
