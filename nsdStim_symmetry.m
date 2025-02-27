@@ -94,7 +94,7 @@ for isub=1:8
            
             %% pass image through filter
             for m = 1: length(methods)
-                featureMap = generateSymmetryMap(vecLD,symmetryType, methods{m}, NaN, backgroundSize, renderSize);
+                featureMap = generateSymmetryMap(vecLD,symmetryType, methods{m}, 0, backgroundSize, renderSize);
                 model.(methods{m}) = featureMap;
             % figure;drawMATproperty(vecLD,'parallelism')
             % figure;

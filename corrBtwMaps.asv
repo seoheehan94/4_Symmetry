@@ -1,0 +1,36 @@
+close all;
+clear all;
+
+
+parfolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/parfilter/';%to save model outputs
+parList = dir(parfolder);
+parList = parList(~ismember({parList(:).name},{'.','..'}));
+
+mirfolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/parfilter/';%to save model outputs
+mirList = dir(mirfolder);
+mirList = mirList(~ismember({mirList(:).name},{'.','..'}));
+
+
+savefolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/corrBtwMaps/';%to save model outputs
+
+%%
+
+iimg=0;
+for imgNum=1:length(fileList)
+    iimg = iimg+1
+    parname = parList(imgNum).name;
+    filename = ['maImg' num2str(imgNum) '.mat'];
+    if ~isfile(fullfile(savefolder, filename))%if file exists already no need to remake it
+
+        load(fullfile(filefolder, name), 'model');
+
+        model = rmfield(model,'area');
+
+        model.contour(model.contour ~= 0) = 1;
+        model.medialAxis(model.medialAxis ~= 0) = 1;
+
+        save(fullfile(savefolder, filename),...
+            'numFeatures','bandwidth','dims','model','numLevels');
+    end
+end
+

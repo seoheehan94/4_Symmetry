@@ -23,10 +23,21 @@
 %         end
 % 
 %     end
-    command = 'scp -r /bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/mirfilter/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/';
-    system(command);
+    % command = 'scp -r /bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/mirfilter/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/';
+    % system(command);
 
     % movefile([folderName, '/*'], 'pyramid/')
 
 
 % end
+
+command = 'scp -r /bwdata/NSDData/stimuli/vecLD/images01/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD';
+system(command);
+command = 'scp -r /bwdata/NSDData/stimuli/vecLD/images02/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD';
+system(command);
+command = 'scp -r /bwdata/NSDData/stimuli/vecLD/images03/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD';
+system(command);
+command = 'scp -r /bwdata/NSDData/stimuli/vecLD/images04/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD';
+system(command);
+command = 'scp -r /bwdata/NSDData/stimuli/vecLD/images05/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD';
+system(command);
