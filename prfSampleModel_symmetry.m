@@ -12,7 +12,7 @@
 %   uses files created by: nsdStim.m
 %   creates files used by: regressPrfSplit.m
 
-function prfSampleModel_symmetry(isub,visualRegion, method)
+function prfSampleModel_symmetry(isub,visualRegion,type,method)
 % cd '/home/hanseohe/Documents/GitHub/nsdOtopy';
 delete(gcp('nocreate'));
 % parpool(10);
@@ -71,7 +71,7 @@ x = -(backgroundSize*imgScaling)/2+0.5:(backgroundSize*imgScaling)/2-0.5;
 y = -(backgroundSize*imgScaling)/2+0.5:(backgroundSize*imgScaling)/2-0.5;
 [X,Y] = meshgrid(x,-y);%flip up-down
 
-featurefolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/parfilter/';%to save model outputs
+featurefolder = ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/',type,'filter/'];%to save model outputs
 betasfolder = ['/bwdata/NSDData/nsddata/ppdata/subj0' num2str(isub) '/func1pt8mm/'];
 angFile = fullfile(betasfolder,'prf_angle.nii.gz');
 eccFile = fullfile(betasfolder,'prf_eccentricity.nii.gz');
@@ -126,7 +126,7 @@ for roinum=1:length(rois)
     parfor iimg=1:length(allImgs)
         ['sub: ' num2str(isub) ', roi: ' num2str(iroi) ', image: ' num2str(iimg)]
         imgNum = allImgs(iimg);
-        featurefilename = ['parImg' num2str(imgNum) '.mat'];
+        featurefilename = [type, 'Img' num2str(imgNum) '.mat'];
         data = load(fullfile(featurefolder, featurefilename),'model');
         data.model.(method) = reshape(data.model.(method), [1, 512, 512]);
         imgPrfSampleLevOri = zeros(nvox,numLevels,numFeatures);
@@ -151,8 +151,8 @@ for roinum=1:length(rois)
     end
     prfSampleLevOri{roinum} = prfSampleLevOriRoi;
 
-    prffolder = '/bwdata/NSDData/Seohee/Symmetry/prfsample_Par/';
-    save(fullfile(prffolder,['prfSampleStim_par_', method, '_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
+    prffolder = ['/bwdata/NSDData/Seohee/Symmetry/prfsample_',type,'/'];
+    save(fullfile(prffolder,['prfSampleStim_',type,'_', method, '_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
         'rois','allImgs','numLevels','numFeatures','interpImgSize','backgroundSize','pixPerDeg',...
         'roiPrf','-v7.3');
 end

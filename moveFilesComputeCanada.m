@@ -30,6 +30,8 @@
 
 
 % end
+ % command = 'scp -r /bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/mafilter/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/';
+ %    system(command);
 command = ['scp -r /bwdata/NSDData/stimuli/vecLD/{images01,images02,images03,images04,images05} ' ...
            'hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD'];
 system(command);
