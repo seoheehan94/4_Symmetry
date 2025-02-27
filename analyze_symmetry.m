@@ -3,7 +3,7 @@
 %   uses files created by: regressPrfSplit.m
 %   creates files used by:
 clear all;
-type = 'par'; %'par', 'medialAxis', 'area'
+type = 'par'; %'par', 'mir', 'taper'
 savefolder = ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/brainVolume_', type];
 roiNames = {'V1v','V1d','V2v','V2d','V3v','V3d','hV4','OPA','PPA','RSC'};
 combinedRoiNames = {'V1','V2','V3','hV4','OPA','PPA','RSC'};
@@ -53,11 +53,11 @@ for i = 1:numel(fieldsCon)
         curPPAR2FeatSplit = [curPPAR2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{6}(3,:)];
         curRSCR2FeatSplit = [curRSCR2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{7}(3,:)];
     end
-    writematrix(curRoiR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses/allroiR2', '_', (fieldsCon{i}), '.csv']);
-    writematrix(curV4R2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses/V4R2_', (fieldsCon{i}), '.csv']);
-    writematrix(curOPAR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses/OPAR2_', (fieldsCon{i}), '.csv']);
-    writematrix(curPPAR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses/PPAR2_', (fieldsCon{i}), '.csv']);
-    writematrix(curRSCR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses/RSCR2_', (fieldsCon{i}), '.csv']);
+    writematrix(curRoiR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/allroiR2', '_', (fieldsCon{i}), '.csv']);
+    writematrix(curV4R2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/V4R2_', (fieldsCon{i}), '.csv']);
+    writematrix(curOPAR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/OPAR2_', (fieldsCon{i}), '.csv']);
+    writematrix(curPPAR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/PPAR2_', (fieldsCon{i}), '.csv']);
+    writematrix(curRSCR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/RSCR2_', (fieldsCon{i}), '.csv']);
 
     allroiR2FeatSplit(i) = mean(curRoiR2FeatSplit, 'omitnan');
     V4R2FeatSplit(i) = mean(curV4R2FeatSplit,'omitnan');
@@ -66,7 +66,7 @@ for i = 1:numel(fieldsCon)
     RSCR2FeatSplit(i) = mean(curRSCR2FeatSplit,'omitnan');
 end
 
-save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses/', 'meanR2.mat']), "allroiR2FeatSplit", "V4R2FeatSplit", "OPAR2FeatSplit", "PPAR2FeatSplit", "RSCR2FeatSplit");
+save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/', 'meanR2.mat']), "allroiR2FeatSplit", "V4R2FeatSplit", "OPAR2FeatSplit", "PPAR2FeatSplit", "RSCR2FeatSplit");
 
 
 %% AIC/BIC
@@ -112,45 +112,50 @@ for i = 1:numel(fieldsCon)
     RSCbicFeatSplit(i) = mean(curRSCbicFeatSplit,"omitnan");
 end
 
-save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses/', 'meanAICBIC.mat']), "allroiaicFeatSplit", "allroibicFeatSplit", ...
+save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/', 'meanAICBIC.mat']), "allroiaicFeatSplit", "allroibicFeatSplit", ...
     "V4aicFeatSplit","V4bicFeatSplit", ...
     "OPAaicFeatSplit", "OPAaicFeatSplit",...
     "PPAaicFeatSplit", "PPAaicFeatSplit", ...
     "RSCaicFeatSplit", "RSCbicFeatSplit");
 
 
-%% Count negative R2
+%% Count positive R2
 
-negativeCount_sub = struct;
+positiveCount_sub = struct;
 totalCount_sub = struct;
 for method = 1:length(methods)
-    negativeCount_sub.(methods{method}) = {};
+    positiveCount_sub.(methods{method}) = {};
+    NACount_sub.(methods{method}) = {};
     totalCount_sub.(methods{method}) = {};
     for isub = 1:8
          for roi = 1:size(roiNsdFeatR2,2)
             curR2 =  totalR2FeatSplit.(methods{method}){isub}{roi}(3,:);
-            negativeCount_sub.(methods{method}){isub}(roi) = sum(curR2(:)<0);
+            positiveCount_sub.(methods{method}){isub}(roi) = sum(curR2(:)>=0);
+            NACount_sub.(methods{method}){isub}(roi) = sum(isnan(curR2(:)));
             totalCount_sub.(methods{method}){isub}(roi) = size(curR2,2);
          end
     end
 end
 
-negativeCount = struct;
+positiveCount = struct;
 for method = 1:length(methods)
-    negativeCount.(methods{method}) = [];
+    positiveCount.(methods{method}) = [];
     for roi = 1:7
-        curRoiNegativeSum =0;
+        curRoiPositiveSum =0;
         curRoiTotalSum =0;
+        curRoiNASum =0;
         for isub = 1:8
-            curRoiNegativeSum = curRoiNegativeSum+negativeCount_sub.(methods{method}){isub}(roi);
+            curRoiPositiveSum = curRoiPositiveSum+positiveCount_sub.(methods{method}){isub}(roi);
+            curRoiNASum = curRoiNASum+NACount_sub.(methods{method}){isub}(roi);
             curRoiTotalSum = curRoiTotalSum+totalCount_sub.(methods{method}){isub}(roi);
         end
-        negativeCount.(methods{method})(1,roi) = curRoiNegativeSum;
-        negativeCount.(methods{method})(2,roi) = curRoiTotalSum;
+        positiveCount.(methods{method})(1,roi) = curRoiPositiveSum;
+        positiveCount.(methods{method})(2,roi) = curRoiTotalSum;
+        positiveCount.(methods{method})(3,roi) = curRoiNASum;
     end
 end
 
-save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses/', 'negativeR2Count.mat']), "negativeCount")
+% save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/', 'positiveR2Count.mat']), "positiveCount")
 %% make a brain volume
 
 for method = 1:3

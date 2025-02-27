@@ -1,0 +1,75 @@
+% nsdStim.m
+%
+% associated with the following publication: Roth, ZN, Kay, K, and Merriam, EP (2022).
+% Massive natural scene sampling reveals reliable coarse-scale orientation tuning in human V1
+% DOI:
+%
+%   usage: nsdStim()
+%   by: zvi roth
+%   date: 7/29/2022
+%   purpose: run natural scene stimuli through the models, get filter energy responses,
+%   and save output
+%   creates files used by: prfSampleModel.m
+
+% uses the steerable pyramid: https://github.com/elimerriam/stimulusVignetting
+
+close all;
+clear all;
+
+backgroundSize = [512 512];
+renderSize = [357,357];
+
+methods = {'contour', 'medialAxis', 'area'};
+filefolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/parfilter/';%to save model outputs
+savefolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/medialAxisfilter/';%to save model outputs
+
+%%
+
+numFeatures = 1;
+bandwidth = 1;
+dims = backgroundSize;
+numLevels = 1;
+
+%%
+
+backgroundColor(1,1,:) = uint8([127,127,127]);
+fixPoint(1,1,:) = [255 0 0];
+
+iimg=0;
+for imgNum=allImgs
+    iimg = iimg+1
+
+    filename = [whichtype, 'Img' num2str(imgNum) '.mat'];
+    if ~isfile(fullfile(savefolder, filename))%if file exists already no need to remake it
+        imgName = ['img' num2str(imgNum) '.mat'];
+        if imgNum <= 14600*1
+            imgFolder = [vecLDfolder, '/images01/'];
+        elseif imgNum <= 14600*2
+            imgFolder = [vecLDfolder, '/images02/'];
+        elseif imgNum <= 14600*3
+            imgFolder = [vecLDfolder, '/images03/'];
+        elseif imgNum <= 14600*4
+            imgFolder = [vecLDfolder, '/images04/'];
+        elseif imgNum <= 14600*5
+            imgFolder = [vecLDfolder, '/images05/'];
+        end
+
+        load(fullfile(imgFolder, imgName));
+
+        %% pass image through filter
+        for m = 1: length(methods)
+            featureMap = generateSymmetryMap(vecLD,symmetryType, methods{m}, NaN, backgroundSize, renderSize);
+            model.(methods{m}) = featureMap;
+            % figure;drawMATproperty(vecLD,'parallelism')
+            % figure;
+            % h=imagesc(featureMap);
+            % set(h, 'AlphaData', 1-isnan(featureMap));
+            % colormap(gca,jet);
+
+        end
+
+        save(fullfile(savefolder, filename),...
+            'numFeatures','bandwidth','dims','model','numLevels');
+    end
+end
+

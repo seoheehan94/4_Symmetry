@@ -2,16 +2,17 @@
 % For the group map, we computed the circular mean across subjects for each vertex in V1–V4, 
 % weighted by the full model R2 values.
 clear all;
+type = 'par'; %'par', 'mir', 'taper'
 
-filedir = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/surfaceData/';
+filedir = ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/surfaceData_' type, '/'];
 methods = {'contour', 'medialAxis', 'area'};
 
 addpath(genpath('/usr/local/freesurfer/7.4.1/matlab'));
-[~,M,mr] = load_mgh('/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/surfaceData/sub1/contourBrain_sub1_lh_fsaverage.mgh');
+[~,M,mr] = load_mgh(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/surfaceData_' type, '/sub1/contourBrain_sub1_lh_fsaverage.mgh']);
 
 % cutoff
-cutoff_lh = 0;
-cutoff_rh = 0;
+cutoff_lh = 0.02;
+cutoff_rh = 0.1;
 
 % number of voxels survived
 cutNumVoxel_lh = [];
@@ -34,7 +35,7 @@ for curcond = 1:3
     end
 
 
-    %% weighted circ mean
+    %% weighted mean
     symPref_lh = [];
     symPref_rh = [];
     
@@ -77,7 +78,7 @@ for curcond = 1:3
    
    
 
-    %% only R2 > 0
+    %% only R2 > 0 
     meanR2_lh = mean(R2_lh,2, "omitnan");
     meanR2_rh = mean(R2_rh,2, "omitnan");
     % cutoff_lh = prctile(meanR2_lh, 50);
@@ -87,6 +88,10 @@ for curcond = 1:3
     R2cutoff_symPref_rh = symPref_rh;
     R2cutoff_symPref_rh(meanR2_rh < cutoff_rh) = NaN;
     
+    % R2cutoff_symPref_lh(R2cutoff_symPref_lh>100)= NaN;
+    % R2cutoff_symPref_rh(R2cutoff_symPref_rh>100)= NaN;
+    % R2cutoff_symPref_lh(R2cutoff_symPref_lh<-100)= NaN;
+    % R2cutoff_symPref_rh(R2cutoff_symPref_rh<-100)= NaN;
     % meanR2_lh_save=(meanR2_lh(~isnan(meanR2_lh)));
     % meanR2_rh_save=(meanR2_rh(~isnan(meanR2_rh)));
 
@@ -127,65 +132,65 @@ end
 
 
 
-%% get R2 difference
-clear all;
-
-filedir = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Orientation/surfaceData/';
-
-addpath(genpath('/usr/local/freesurfer/7.4.1/matlab'));
-[~,M,mr] = load_mgh('/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Orientation/surfaceData/sub1/oldBrain_sub1_lh_fsaverage.mgh');
-
-for isub=1:8
-    for curcond = 1:3
-        R2_lh(:,curcond) = load_mgh([filedir, 'sub', num2str(isub), '/', methods{curcond}, 'BrainR2_sub', num2str(isub), '_lh_fsaverage.mgh']);
-        R2_rh(:,curcond) = load_mgh([filedir, 'sub', num2str(isub), '/', methods{curcond}, 'BrainR2_sub', num2str(isub), '_rh_fsaverage.mgh']); 
-    end
-
-    %old_ori
-    R2diff_lh(:,isub) = R2_lh(:,3)- R2_lh(:,1);
-    R2diff_rh(:,isub) = R2_rh(:,3)- R2_rh(:,1);
-
-end
-
-meanR2diff_lh = mean(R2diff_lh,2, "omitnan");
-meanR2diff_rh = mean(R2diff_rh,2, "omitnan");
-
-fileName_lh = [filedir, 'R2diff_oriold_lh_fsaverage.mgh'];
-fileName_rh = [filedir, 'R2diff_oriold_rh_fsaverage.mgh'];
-  
-% save_mgh(meanR2diff_lh, fileName_lh, M,mr);
-% save_mgh(meanR2diff_rh, fileName_rh, M,mr);
-
-
-%% save by ROI
-% Path to your .label file
-visualregions = {'V1', 'V2', 'V3', 'V4'};
-hemis = {'lh', 'rh'};
-numVertices = 163842;
-for visualregion = 1:4
-    for hemi = 1:2
-        labelFilePath = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Orientation/visualRegion/labels/';
-        curfile = [labelFilePath, hemis{hemi}, '.', visualregions{visualregion}, '.label'];
-        
-        % Read the .label file
-        labelData = read_label(curfile);
-
-        % Initialize the overlay with NaN (no value) for all vertices
-        overlay = nan(numVertices, 1);
-
-        % Assign a value (e.g., 1.0) to vertices in the label file
-        overlay(labelData.vertexIndex) = labelData.values;
-
-        if hemi == 1
-            curmeanR2diff = meanR2diff_lh;
-        else 
-            curmeanR2diff = meanR2diff_rh;
-        end
-
-        curmeanR2diff(isnan(overlay))=NaN;
-
-        fileName = [filedir, 'R2diff_oriold_', visualregions{visualregion}, '_', hemis{hemi}, '_fsaverage.mgh'];
-        save_mgh(curmeanR2diff, fileName, M,mr);
-
-    end
-end
+% %% get R2 difference
+% clear all;
+% 
+% filedir = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Orientation/surfaceData/';
+% 
+% addpath(genpath('/usr/local/freesurfer/7.4.1/matlab'));
+% [~,M,mr] = load_mgh('/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Orientation/surfaceData/sub1/oldBrain_sub1_lh_fsaverage.mgh');
+% 
+% for isub=1:8
+%     for curcond = 1:3
+%         R2_lh(:,curcond) = load_mgh([filedir, 'sub', num2str(isub), '/', methods{curcond}, 'BrainR2_sub', num2str(isub), '_lh_fsaverage.mgh']);
+%         R2_rh(:,curcond) = load_mgh([filedir, 'sub', num2str(isub), '/', methods{curcond}, 'BrainR2_sub', num2str(isub), '_rh_fsaverage.mgh']); 
+%     end
+% 
+%     %old_ori
+%     R2diff_lh(:,isub) = R2_lh(:,3)- R2_lh(:,1);
+%     R2diff_rh(:,isub) = R2_rh(:,3)- R2_rh(:,1);
+% 
+% end
+% 
+% meanR2diff_lh = mean(R2diff_lh,2, "omitnan");
+% meanR2diff_rh = mean(R2diff_rh,2, "omitnan");
+% 
+% fileName_lh = [filedir, 'R2diff_oriold_lh_fsaverage.mgh'];
+% fileName_rh = [filedir, 'R2diff_oriold_rh_fsaverage.mgh'];
+% 
+% % save_mgh(meanR2diff_lh, fileName_lh, M,mr);
+% % save_mgh(meanR2diff_rh, fileName_rh, M,mr);
+% 
+% 
+% %% save by ROI
+% % Path to your .label file
+% visualregions = {'V1', 'V2', 'V3', 'V4'};
+% hemis = {'lh', 'rh'};
+% numVertices = 163842;
+% for visualregion = 1:4
+%     for hemi = 1:2
+%         labelFilePath = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Orientation/visualRegion/labels/';
+%         curfile = [labelFilePath, hemis{hemi}, '.', visualregions{visualregion}, '.label'];
+% 
+%         % Read the .label file
+%         labelData = read_label(curfile);
+% 
+%         % Initialize the overlay with NaN (no value) for all vertices
+%         overlay = nan(numVertices, 1);
+% 
+%         % Assign a value (e.g., 1.0) to vertices in the label file
+%         overlay(labelData.vertexIndex) = labelData.values;
+% 
+%         if hemi == 1
+%             curmeanR2diff = meanR2diff_lh;
+%         else 
+%             curmeanR2diff = meanR2diff_rh;
+%         end
+% 
+%         curmeanR2diff(isnan(overlay))=NaN;
+% 
+%         fileName = [filedir, 'R2diff_oriold_', visualregions{visualregion}, '_', hemis{hemi}, '_fsaverage.mgh'];
+%         save_mgh(curmeanR2diff, fileName, M,mr);
+% 
+%     end
+% end
