@@ -30,14 +30,6 @@
 
 
 % end
-
-command = 'scp -r /bwdata/NSDData/stimuli/vecLD/images01/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD';
-system(command);
-command = 'scp -r /bwdata/NSDData/stimuli/vecLD/images02/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD';
-system(command);
-command = 'scp -r /bwdata/NSDData/stimuli/vecLD/images03/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD';
-system(command);
-command = 'scp -r /bwdata/NSDData/stimuli/vecLD/images04/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD';
-system(command);
-command = 'scp -r /bwdata/NSDData/stimuli/vecLD/images05/ hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD';
+command = ['scp -r /bwdata/NSDData/stimuli/vecLD/{images01,images02,images03,images04,images05} ' ...
+           'hanseohe@beluga4.computecanada.ca:/home/hanseohe/scratch/stimuli/vecLD'];
 system(command);
