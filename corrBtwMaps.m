@@ -12,7 +12,7 @@ mirList = mirList(~ismember({mirList(:).name},{'.','..'}));
 
 
 savefolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/corrBtwMaps/';%to save model outputs
-filePath = fullfile(savefolder, 'results_corrBtwMaps.mat');
+filePath = fullfile(savefolder, 'results_corrBtwMaps_nonzeros.mat');
 if isfile(filePath)
     load(filePath, 'allResultsTable');
 end
@@ -28,7 +28,7 @@ for imgNum=1:length(parList)
         parModel = load(fullfile(parfolder, parname), 'model');
         mirModel = load(fullfile(mirfolder, mirname), 'model');
 
-        [R,P] = corrcoef(parModel.model.contour,mirModel.model.contour);
+        [R,P] = corrcoef(nonzeros(parModel.model.contour),nonzeros(mirModel.model.contour));
 
         resultsTable = table(imgNum, R(1,2), P(1,2), ...
             'VariableNames', {'imgnum', 'R', 'P'});
