@@ -64,7 +64,7 @@ y = -(backgroundSize*imgScaling)/2+0.5:(backgroundSize*imgScaling)/2-0.5;
 [X,Y] = meshgrid(x,-y);%flip up-down
 
 featurefolder = ['/home/hanseohe/scratch/stimuli/',type,'filter/'];%to save model outputs
-betasfolder = ['/home/hanseohe/projects/def-waltherd/hanseohe/nsddata/ppdata/subj0' num2str(isub) '/func1pt8mm/'];
+betasfolder = ['/home/hanseohe/projects/def-waltherd/hanseohe/nsddata/ppdata/subj0' num2str(isub) '/'];
 angFile = fullfile(betasfolder,'prf_angle.nii.gz');
 eccFile = fullfile(betasfolder,'prf_eccentricity.nii.gz');
 sizeFile = fullfile(betasfolder,'prf_size.nii.gz');
