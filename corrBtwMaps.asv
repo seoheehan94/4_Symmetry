@@ -6,31 +6,58 @@ parfolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/parfilter/';%to s
 parList = dir(parfolder);
 parList = parList(~ismember({parList(:).name},{'.','..'}));
 
-mirfolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/parfilter/';%to save model outputs
+mirfolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/mirfilter/';%to save model outputs
 mirList = dir(mirfolder);
 mirList = mirList(~ismember({mirList(:).name},{'.','..'}));
 
 
 savefolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/corrBtwMaps/';%to save model outputs
-
+filePath = fullfile(savefolder, 'results_corrBtwMaps_nonzeros.mat');
+if isfile(filePath)
+    load(filePath, 'allResultsTable');
+end
 %%
 
 iimg=0;
-for imgNum=1:length(fileList)
+for imgNum=1:length(parList)
     iimg = iimg+1
     parname = parList(imgNum).name;
-    filename = ['maImg' num2str(imgNum) '.mat'];
-    if ~isfile(fullfile(savefolder, filename))%if file exists already no need to remake it
+    mirname = mirList(imgNum).name;
 
-        load(fullfile(filefolder, name), 'model');
 
-        model = rmfield(model,'area');
+        parModel = load(fullfile(parfolder, parname), 'model');
+        mirModel = load(fullfile(mirfolder, mirname), 'model');
 
-        model.contour(model.contour ~= 0) = 1;
-        model.medialAxis(model.medialAxis ~= 0) = 1;
+        curpar=parModel.model.contour;
+        curmir=mirModel.model.contour;
+        curpar_nonzeros=nonzeros(curpar);
+        curmir_nonzeros=nonzeros(curmir);
+        
+        if length(curmir_nonzeros) == length(curpar_nonzeros)
+            [R,P] = corrcoef(nonzeros(parModel.model.contour),nonzeros(mirModel.model.contour));
+        else
+            mask = (curpar == 0 & curmir ~= 0) | (curmir == 0 & curpar ~= 0);
 
-        save(fullfile(savefolder, filename),...
-            'numFeatures','bandwidth','dims','model','numLevels');
-    end
+            % Replace all 0s in both A and B with NaN
+            curpar(curpar == 0) = NaN;
+            B(B == 0) = NaN;
+
+            % Restore 0s where one was originally 0 but the other was not
+            A(mask) = 0;
+            B(mask) = 0;
+
+
+        end
+     
+        resultsTable = table(imgNum, R(1,2), P(1,2), ...
+            'VariableNames', {'imgnum', 'R', 'P'});
+
+        if exist('allResultsTable', 'var')
+            allResultsTable = [allResultsTable; resultsTable];
+        else
+            allResultsTable = resultsTable;
+        end
+    save(filePath, 'allResultsTable');
 end
 
+% writetable(allResultsTable, 'results_corrBtwMaps.csv');

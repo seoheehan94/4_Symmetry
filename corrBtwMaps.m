@@ -28,8 +28,26 @@ for imgNum=1:length(parList)
         parModel = load(fullfile(parfolder, parname), 'model');
         mirModel = load(fullfile(mirfolder, mirname), 'model');
 
-        [R,P] = corrcoef(nonzeros(parModel.model.contour),nonzeros(mirModel.model.contour));
+        curpar=parModel.model.contour;
+        curmir=mirModel.model.contour;
+        
+        if length(curmir_nonzeros) == length(curpar_nonzeros)
+            curpar_nonzeros=nonzeros(curpar);
+            curmir_nonzeros=nonzeros(curmir);
+            
+        else
+            mask = (curpar == 0 & curmir ~= 0) | (curmir == 0 & curpar ~= 0);
+            % Replace all 0s in both A and B with NaN
+            curpar(curpar == 0) = NaN;
+            curmir(curmir == 0) = NaN;
+            % Restore 0s where one was originally 0 but the other was not
+            curpar(mask) = 0;
+            curmir(mask) = 0;
+            curpar_nonzeros=curpar(~isnan(curpar));
+            curmir_nonzeros=curmir(~isnan(curmir));
+        end
 
+        [R,P] = corrcoef(curpar_nonzeros,curmir_nonzeros);
         resultsTable = table(imgNum, R(1,2), P(1,2), ...
             'VariableNames', {'imgnum', 'R', 'P'});
 
