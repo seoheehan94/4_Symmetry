@@ -31,7 +31,7 @@ for imgNum=1:length(parList)
         curpar=parModel.model.contour;
         curmir=mirModel.model.contour;
         
-        if length(curmir_nonzeros) == length(curpar_nonzeros)
+        if length(nonzeros(curpar)) == length(nonzeros(curmir))
             curpar_nonzeros=nonzeros(curpar);
             curmir_nonzeros=nonzeros(curmir);
             
