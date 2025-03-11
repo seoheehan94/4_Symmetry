@@ -22,7 +22,7 @@ savefolder = ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/',whichmethod,'
 numLevels = 1;
 numFeatures = 3;
 bandwidth=1;
-dim=[512,512];
+dims=[512,512];
 
 for imgNum = 1:73000
     clearvars model filename par mir tap parfile mirfile tapfile
