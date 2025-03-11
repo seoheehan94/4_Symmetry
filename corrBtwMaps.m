@@ -25,12 +25,12 @@ for imgNum=1:length(parList)
     mirname = mirList(imgNum).name;
 
 
-        parModel = load(fullfile(parfolder, parname), 'model');
-        mirModel = load(fullfile(mirfolder, mirname), 'model');
+    parModel = load(fullfile(parfolder, parname), 'model');
+    mirModel = load(fullfile(mirfolder, mirname), 'model');
 
-        curpar=parModel.model.contour;
-        curmir=mirModel.model.contour;
-        
+    curpar=parModel.model.contour;
+    curmir=mirModel.model.contour;
+
         if length(nonzeros(curpar)) == length(nonzeros(curmir))
             curpar_nonzeros=nonzeros(curpar);
             curmir_nonzeros=nonzeros(curmir);

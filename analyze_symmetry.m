@@ -8,13 +8,14 @@ savefolder = ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/brainVolume_',
 roiNames = {'V1v','V1d','V2v','V2d','V3v','V3d','hV4','OPA','PPA','RSC'};
 combinedRoiNames = {'V1','V2','V3','hV4','OPA','PPA','RSC'};
 methods = {'contour', 'medialAxis', 'area'};
+% methods = {'contour','medialAxis'};
 curPrf = ['/bwdata/NSDData/Seohee/Symmetry/prfsample_' type, '/'];
 
 %% 1.  mean R2, AIC, BIC %%
 totalR2FeatSplit = struct;
 totalaicFeatSplit = struct;
 totalbicFeatSplit = struct;
-for method = 1:3
+for method = 1:length(methods)
     totalR2FeatSplit.(methods{method}) = {};
     totalaicFeatSplit.(methods{method}) = {};
     totalbicFeatSplit.(methods{method}) = {};
@@ -33,12 +34,18 @@ end
 %% R2
 fieldsCon = fieldnames(totalR2FeatSplit);
 allroiR2FeatSplit=[];
+V1R2FeatSplit = [];
+V2R2FeatSplit = [];
+V3R2FeatSplit = [];
 V4R2FeatSplit = [];
 OPAR2FeatSplit=[];
 PPAR2FeatSplit=[];
 RSCR2FeatSplit=[];
 for i = 1:numel(fieldsCon)
     curRoiR2FeatSplit = [];
+    curV1R2FeatSplit = [];
+    curV2R2FeatSplit = [];
+    curV3R2FeatSplit = [];
     curV4R2FeatSplit = [];
     curOPAR2FeatSplit = [];
     curPPAR2FeatSplit = [];
@@ -48,6 +55,9 @@ for i = 1:numel(fieldsCon)
         for roi = 1:size(roiNsdFeatR2,2)
             curRoiR2FeatSplit = [curRoiR2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{roi}(3,:)];
         end
+        curV1R2FeatSplit = [curV1R2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{1}(3,:)];
+        curV2R2FeatSplit = [curV2R2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{2}(3,:)];
+        curV3R2FeatSplit = [curV3R2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{3}(3,:)];
         curV4R2FeatSplit = [curV4R2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{4}(3,:)];
         curOPAR2FeatSplit = [curOPAR2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{5}(3,:)];
         curPPAR2FeatSplit = [curPPAR2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{6}(3,:)];
@@ -60,13 +70,16 @@ for i = 1:numel(fieldsCon)
     writematrix(curRSCR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/RSCR2_', (fieldsCon{i}), '.csv']);
 
     allroiR2FeatSplit(i) = mean(curRoiR2FeatSplit, 'omitnan');
+    V1R2FeatSplit(i) = mean(curV1R2FeatSplit,'omitnan');
+    V2R2FeatSplit(i) = mean(curV2R2FeatSplit,'omitnan');
+    V3R2FeatSplit(i) = mean(curV3R2FeatSplit,'omitnan');
     V4R2FeatSplit(i) = mean(curV4R2FeatSplit,'omitnan');
     OPAR2FeatSplit(i) = mean(curOPAR2FeatSplit,'omitnan');
     PPAR2FeatSplit(i) = mean(curPPAR2FeatSplit,'omitnan');
     RSCR2FeatSplit(i) = mean(curRSCR2FeatSplit,'omitnan');
 end
 
-save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/', 'meanR2.mat']), "allroiR2FeatSplit", "V4R2FeatSplit", "OPAR2FeatSplit", "PPAR2FeatSplit", "RSCR2FeatSplit");
+ save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/', 'meanR2.mat']), "allroiR2FeatSplit", "V1R2FeatSplit", "V2R2FeatSplit","V3R2FeatSplit", "V4R2FeatSplit", "OPAR2FeatSplit", "PPAR2FeatSplit", "RSCR2FeatSplit");
 
 
 %% AIC/BIC

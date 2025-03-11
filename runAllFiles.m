@@ -32,14 +32,14 @@ methods = {'contour', 'medialAxis', 'area'};
 for sub = 1:8
     for roi =1:7
     fprintf('%s. %d. %d. %s ...\n','regressPrfSplit',sub,roi,'contour');
-    regressPrfSplit_symmetry(sub, roi, 'ma', 'contour');
+    regressPrfSplit_symmetry(sub, roi, 'tap', 'contour');
     end
 end
 
 for sub = 1:8
     for roi =1:7
     fprintf('%s. %d. %d. %s ...\n','regressPrfSplit',sub,roi,'medialAxis');
-    regressPrfSplit_symmetry(sub, roi, 'ma', 'medialAxis');
+    regressPrfSplit_symmetry(sub, roi, 'tap', 'medialAxis');
     end
 end
 
@@ -58,10 +58,10 @@ end
 %% getVoxPref
 for sub = 1:8
     fprintf('%s. %d. %d. %s ...\n','getVoxPref_symmetry',sub, 7, 'medialAxis');
-    getVoxPref_symmetry(sub,7,'ma', 'medialAxis')
+    getVoxPref_symmetry(sub,7,'tap', 'medialAxis')
 end
 
 for sub = 1:8
     fprintf('%s. %d. %d. %s ...\n','getVoxPref_symmetry',sub, 7, 'contour');
-    getVoxPref_symmetry(sub,7,'ma', 'contour')
+    getVoxPref_symmetry(sub,7,'tap', 'contour')
 end
