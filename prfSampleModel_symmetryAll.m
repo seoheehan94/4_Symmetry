@@ -12,7 +12,7 @@
 %   uses files created by: nsdStim.m
 %   creates files used by: regressPrfSplit.m
 
-function prfSampleModel_symmetryAll(isub,visualRegion,type,method)
+function prfSampleModel_symmetryAll(isub,visualRegion,type)
 % cd '/home/hanseohe/Documents/GitHub/nsdOtopy';
 delete(gcp('nocreate'));
 % parpool(10);
