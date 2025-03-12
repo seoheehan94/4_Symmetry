@@ -128,7 +128,6 @@ for roinum=1:length(rois)
         imgNum = allImgs(iimg);
         featurefilename = [type, 'Img' num2str(imgNum) '.mat'];
         data = load(fullfile(featurefolder, featurefilename),'model');
-        data.model.(method) = reshape(data.model.(method), [1, 512, 512]);
         imgPrfSampleLevOri = zeros(nvox,numLevels,numFeatures);
         %loop through voxels
         for ivox=1:nvox
@@ -152,7 +151,7 @@ for roinum=1:length(rois)
     prfSampleLevOri{roinum} = prfSampleLevOriRoi;
 
     prffolder = ['/bwdata/NSDData/Seohee/Symmetry/prfsample_',type,'/'];
-    save(fullfile(prffolder,['prfSampleStim_',type,'_', method, '_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
+    save(fullfile(prffolder,['prfSampleStim_',type,'_', '_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']),'prfSampleLevOri',...
         'rois','allImgs','numLevels','numFeatures','interpImgSize','backgroundSize','pixPerDeg',...
         'roiPrf','-v7.3');
 end
