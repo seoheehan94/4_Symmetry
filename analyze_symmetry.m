@@ -3,7 +3,7 @@
 %   uses files created by: regressPrfSplit.m
 %   creates files used by:
 clear all;
-type = 'par'; %'par', 'mir', 'taper'
+type = 'tap'; %'par', 'mir', 'tap'
 savefolder = ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/brainVolume_', type];
 roiNames = {'V1v','V1d','V2v','V2d','V3v','V3d','hV4','OPA','PPA','RSC'};
 combinedRoiNames = {'V1','V2','V3','hV4','OPA','PPA','RSC'};
