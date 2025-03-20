@@ -154,7 +154,7 @@ for visualRegion=visualRegions
                 if rank_X < size(voxPrfFeatSample, 2)
                     fprintf('isplit: %d, ivox: %d\n', isplit, ivox);
                     warning('Design matrix is rank-deficient.');
-                    voxFeatCoef{roinum}(isplit,ivox,:) = [NaN;NaN];
+                    voxFeatCoef{roinum}(isplit,ivox,:) = [NaN;NaN;NaN;NaN];
                 else
                     voxFeatCoef{roinum}(isplit,ivox,:) = voxPrfFeatSample\voxBetas;%check vox 144 in first ROI
                     
