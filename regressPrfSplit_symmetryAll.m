@@ -95,6 +95,8 @@ for visualRegion=visualRegions
     
     r2 = cell(length(rois),1);
     r2feat = cell(length(rois),1);
+    voxFeatFstat = cell(length(rois),1);
+    voxFeatpvalue = cell(length(rois),1);
     r2featSplit = cell(length(rois),1);
     r2featSplit_reduced_par = cell(length(rois),1);
     r2featSplit_reduced_mir = cell(length(rois),1);
@@ -236,7 +238,10 @@ for visualRegion=visualRegions
                 voxPrfFeatSample(:,end+1) = ones;
                 
                 voxFeatResidualSplit{roinum}(isplit,ivox,1:numTrials) = voxBetas' - squeeze(voxFeatCoef{roinum}(nsplits-isplit+1,ivox,:))'*voxPrfFeatSample';
-                
+                [Fvalue,pvalue] = Fstat(voxFeatResidualSplit{roinum}(isplit,ivox,1:sum(splitImgTrials(isplit,:))), roiBetas{roinum}(ivox,imgTrials>0), sum(splitImgTrials(isplit,:)),size(voxPrfFeatSample, 2)-1);
+                voxFeatFstat{roinum}(isplit,ivox,1:numTrials) = Fvalue;
+                voxFeatpvalue{roinum}(isplit,ivox,1:numTrials) = pvalue;
+                 
                 for p = 1:3
                     % Remove one predictor (set column p to zero)
                     reducedSample = voxPrfFeatSample;
@@ -285,6 +290,8 @@ for visualRegion=visualRegions
     nsd.voxResidualSplit = voxResidualSplit;
     nsd.voxFeatResidualSplit = voxFeatResidualSplit;
     nsd.r2 = r2;
+    nsd.voxFeatFstat = voxFeatFstat;
+    nsd.voxFeatpvalue = voxFeatpvalue;
     nsd.r2feat = r2feat;
     nsd.r2split = r2split;
     nsd.r2featSplit = r2featSplit;

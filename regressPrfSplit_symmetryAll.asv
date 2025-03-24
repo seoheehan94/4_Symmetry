@@ -97,8 +97,11 @@ for visualRegion=visualRegions
     r2feat = cell(length(rois),1);
     r2featSplit = cell(length(rois),1);
     r2featSplit_reduced_par = cell(length(rois),1);
-    r2featSplit_reduced_par = cell(length(rois),1);
-    r2featSplit_reduced_par = cell(length(rois),1);
+    r2featSplit_reduced_mir = cell(length(rois),1);
+    r2featSplit_reduced_tap = cell(length(rois),1);
+    r2featSplit_only_par = cell(length(rois),1);
+    r2featSplit_only_mir = cell(length(rois),1);
+    r2featSplit_only_tap = cell(length(rois),1);
     r2split = cell(length(rois),1);
     voxFeatResidFeatR2 = cell(length(rois),1);
     voxFeatPredFeatR2 = cell(length(rois),1);
@@ -151,7 +154,7 @@ for visualRegion=visualRegions
                 if rank_X < size(voxPrfFeatSample, 2)
                     fprintf('isplit: %d, ivox: %d\n', isplit, ivox);
                     warning('Design matrix is rank-deficient.');
-                    voxFeatCoef{roinum}(isplit,ivox,:) = [NaN;NaN];
+                    voxFeatCoef{roinum}(isplit,ivox,:) = [NaN;NaN;NaN;NaN];
                 else
                     voxFeatCoef{roinum}(isplit,ivox,:) = voxPrfFeatSample\voxBetas;%check vox 144 in first ROI
                     
@@ -233,7 +236,7 @@ for visualRegion=visualRegions
                 voxPrfFeatSample(:,end+1) = ones;
                 
                 voxFeatResidualSplit{roinum}(isplit,ivox,1:numTrials) = voxBetas' - squeeze(voxFeatCoef{roinum}(nsplits-isplit+1,ivox,:))'*voxPrfFeatSample';
-                
+                voxFeatFstat{roinum}(isplit,ivox,1:numTrials) = Fstat(voxFeatResidualSplit{roinum}(isplit,ivox,1:sum(splitImgTrials(isplit,:))), roiBetas{roinum}(ivox,imgTrials>0), sum(splitImgTrials(isplit,:)),size(voxPrfFeatSample, 2)-1);
                 for p = 1:3
                     % Remove one predictor (set column p to zero)
                     reducedSample = voxPrfFeatSample;
@@ -285,6 +288,9 @@ for visualRegion=visualRegions
     nsd.r2feat = r2feat;
     nsd.r2split = r2split;
     nsd.r2featSplit = r2featSplit;
+    nsd.r2featSplit_only_par = r2featSplit_only_par;
+    nsd.r2featSplit_only_mir = r2featSplit_only_mir;
+    nsd.r2featSplit_only_tap = r2featSplit_only_tap;
     nsd.aicFeatSplit = aicFeatSplit;
     nsd.bicFeatSplit = bicFeatSplit;
     nsd.pearsonRfeat = pearsonRfeat;
