@@ -39,16 +39,16 @@ end
 for sub = 1:8
     for roi =1:7
     fprintf('%s. %d. %d. %s ...\n','regressPrfSplit',sub,roi,'medialAxis');
-    regressPrfSplit_symmetry(sub, roi, 'medialAxis');
+    regressPrfSplit_symmetryAll(sub, roi, 'medialAxis');
     end
 end
 
-for sub = 1:8
-    for roi =1:7
-    fprintf('%s. %d. %d. %s ...\n','regressPrfSplit',sub,roi,'area');
-    regressPrfSplit_symmetry(sub, roi, 'area');
-    end
-end
+% for sub = 1:8
+%     for roi =1:7
+%     fprintf('%s. %d. %d. %s ...\n','regressPrfSplit',sub,roi,'area');
+%     regressPrfSplit_symmetryAll(sub, roi, 'area');
+%     end
+% end
 
 % % 
 % for sub = 1:8
