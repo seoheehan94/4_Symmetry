@@ -223,8 +223,8 @@ for iregion=1:numregions
     %save preferred orientation and level for this ROI
     iroi=1;
     allRoiPrf{iregion} = roiPrf{iroi};%iroi=1
-    roiFeat{iregion} = nsd.voxFeatFstat{iroi};
-    roiFeat_p{iregion} = nsd.voxFeatpvalue{iroi};
+    roiFstat{iregion} = nsd.voxFeatFstat{iroi};
+    roiFstat_p{iregion} = nsd.voxFeatpvalue{iroi};
 
     roiInd{iregion} = nsd.roiInd{iroi};
     roiNsdFeatR2{iregion} = nsd.r2featSplit{iroi};
@@ -245,7 +245,7 @@ roiNames = {'V1v','V1d','V2v','V2d','V3v','V3d','hV4'};
 combinedRoiNames = {'V1','V2','V3','hV4'};
 
 save([curPrf, 'voxModelPref_', type, '_sub', num2str(isub), '.mat'],'allRoiPrf',...
-    'roiFeat','roiNsdFeatR2', 'roiNsdFeatR2_par', 'roiNsdFeatR2_mir', 'roiNsdFeatR2_tap',...
+    'roiFstat', 'roiFstat_p', 'roiNsdFeatR2', 'roiNsdFeatR2_par', 'roiNsdFeatR2_mir', 'roiNsdFeatR2_tap',...
     'allaicFeatSplit', 'allbicFeatSplit',...
     'visRoiData','roiNames','combinedRoiNames','roiInd','nsplits');
 
