@@ -220,6 +220,7 @@ for iregion=1:numregions
    
     %%
     %save preferred orientation and level for this ROI
+    iroi=1;
     allRoiPrf{iregion} = roiPrf{iroi};%iroi=1
     roiFeat{iregion} = nsd.voxFeatFstat{iroi};
     roiFeat_p{iregion} = nsd.voxFeatpvalue{iroi};
