@@ -37,6 +37,7 @@ backgroundSz= 1024*imgScaling;
 degPerPix = 8.4/(714*imgScaling);
 for iregion=1:numregions
     visualRegion = iregion;%V1,V2,V3,V4
+    visualRegion
     load(fullfile(curPrf,['regressPrfSplit_', type,  '_v' num2str(visualRegion) '_sub' num2str(isub)  '.mat']), ...
         'nsd',...
         'numLevels', 'numFeatures','rois','nvox','roiPrf','nsplits');

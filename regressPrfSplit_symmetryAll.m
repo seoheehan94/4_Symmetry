@@ -322,7 +322,7 @@ for visualRegion=visualRegions
     % bandpassStr = ['_bandpass' num2str(bandMin) 'to' num2str(bandMax)];
     save(fullfile(boxfolder,['regressPrfSplit_', type, '_v' num2str(visualRegion) '_sub' num2str(isub) '.mat']), ...
         'nsd',...
-        'numLevels', 'numFeatures','rois','nvox','roiPrf','nsplits');
+        'numLevels', 'numFeatures','rois','nvox','roiPrf','nsplits','-v7.3');
     toc
 end
 
