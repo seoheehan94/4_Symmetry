@@ -15,7 +15,7 @@
 
 function getVoxPref_symmetryAll(isub,numregions, type)
 
-%methods = {'contour', 'medialAxis', 'area'};
+%type = {'contour', 'medialAxis', 'area'};
 curPrf = ['/bwdata/NSDData/Seohee/Symmetry/prfsample_',type,'/'];
 
 % mrQuit
@@ -25,7 +25,7 @@ global interpSz;
 global backgroundSz;
 global degPerPix;
 
-numFeatures = 1;
+numFeatures = 3;
 nperms=1000;
 
 interpSz= 714;
@@ -47,13 +47,15 @@ for iregion=1:numregions
         nsd.voxFeatResidual{1} = [];
         nsd.voxResidualSplit{1} = [];
         nsd.voxFeatResidualSplit{1} = [];
+        nsd.voxFeatFstat{1} = [];
+        nsd.voxFeatpvalue{1} = [];
         nsd.r2{1} = [];
         nsd.r2feat{1} = [];
         nsd.r2split{1} = [];
         nsd.r2featSplit{1} = [];
-        nsd.r2featSplit_only_par = [];
-        nsd.r2featSplit_only_mir = [];
-        nsd.r2featSplit_only_tap = [];
+        nsd.r2featSplit_only_par{1} = [];
+        nsd.r2featSplit_only_mir{1} = [];
+        nsd.r2featSplit_only_tap{1} = [];
         nsd.aicFeatSplit{1} = [];
         nsd.bicFeatSplit{1} = [];
         nsd.voxCoef{1} = [];
@@ -82,6 +84,8 @@ for iregion=1:numregions
 
             nsd.pearsonRfeat{1} = cat(2,nsd.pearsonRfeat{1},oldNsd.pearsonRfeat{iroi});
             nsd.pearsonR{1} = cat(2,nsd.pearsonR{1},oldNsd.pearsonR{iroi});
+            nsd.voxFeatFstat{1} = cat(2,nsd.voxFeatFstat{1},oldNsd.voxFeatFstat{iroi});
+            nsd.voxFeatpvalue{1} = cat(2,nsd.voxFeatpvalue{1},oldNsd.voxFeatpvalue{iroi});
             nsd.r2{1} = cat(2,nsd.r2{1},oldNsd.r2{iroi});
             nsd.r2feat{1} = cat(2,nsd.r2feat{1},oldNsd.r2feat{iroi});
             nsd.r2split{1} = cat(2,nsd.r2split{1},oldNsd.r2split{iroi});
@@ -139,6 +143,10 @@ for iregion=1:numregions
 
     nsd.pearsonRfeat{1}(nsplits+1,:) = mean(nsd.pearsonRfeat{1},1);
     nsd.pearsonR{1}(nsplits+1,:) = mean(nsd.pearsonR{1},1);
+    nsd.voxFeatFstat{1} = mean(nsd.voxFeatFstat{1},3);
+    nsd.voxFeatpvalue{1}= mean(nsd.voxFeatpvalue{1},3);
+    nsd.voxFeatFstat{1}(nsplits+1,:) = mean(nsd.voxFeatFstat{1},1);
+    nsd.voxFeatpvalue{1}(nsplits+1,:)= mean(nsd.voxFeatpvalue{1},1);
     nsd.r2{1}(nsplits+1,:) = mean(nsd.r2{1},1);
     nsd.r2feat{1}(nsplits+1,:) = mean(nsd.r2feat{1},1);
     nsd.r2split{1}(nsplits+1,:) = mean(nsd.r2split{1},1);
@@ -196,24 +204,25 @@ for iregion=1:numregions
 
 
     %% get symmetry preference 
-    clear fullPrefFeat fullCoef
-    for  iroi=1:length(rois)%rois=1
-        for isplit=1:nsplits
-            fullCoef = squeeze(nsd.voxFeatCoef{iroi}(isplit,:,1:end-1));
-            numvox = size(fullCoef,2);
-            
-            % coefMat = reshape(fullCoef,numvox,numLevels,numFeatures);%vox x levels x orientations
-                        
-            fullPrefFeat{iroi}(isplit,:) = fullCoef;
-        end
-    end
-    
+    % clear fullPrefFeat fullCoef
+    % for  iroi=1:length(rois)%rois=1
+    %     for isplit=1:nsplits
+    %         fullFstat = squeeze(nsd.voxFeatFstat{iroi}(isplit,:));
+    %         numvox = size(fullFstat,2);
+    % 
+    %         % coefMat = reshape(fullCoef,numvox,numLevels,numFeatures);%vox x levels x orientations
+    % 
+    %         fullPrefFeat{iroi}(isplit,:) = fullFstat;
+    %     end
+    % end
+    % 
 
    
     %%
     %save preferred orientation and level for this ROI
     allRoiPrf{iregion} = roiPrf{iroi};%iroi=1
-    roiFeat{iregion} = fullPrefFeat{iroi};
+    roiFeat{iregion} = nsd.voxFeatFstat{iroi};
+    roiFeat_p{iregion} = nsd.voxFeatpvalue{iroi};
 
     roiInd{iregion} = nsd.roiInd{iroi};
     roiNsdFeatR2{iregion} = nsd.r2featSplit{iroi};

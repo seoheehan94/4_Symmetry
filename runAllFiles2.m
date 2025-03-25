@@ -41,5 +41,5 @@ end
 %% getVoxPref
 for sub = 1:8
     fprintf('%s. %d. %d. %s ...\n','getVoxPref_symmetry',sub, 7, 'area');
-    getVoxPref_symmetry(sub,7,'tap', 'area')
+    getVoxPref_symmetryAll(sub,7,'tap', 'area')
 end
