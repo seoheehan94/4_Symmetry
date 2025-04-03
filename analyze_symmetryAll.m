@@ -3,7 +3,7 @@
 %   uses files created by: regressPrfSplit.m
 %   creates files used by:
 clear all;
-type = 'contour'; %'contour', 'medialAxis', 'area'
+type = 'area'; %'contour', 'medialAxis', 'area'
 savefolder = ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/brainVolume_', type];
 roiNames = {'V1v','V1d','V2v','V2d','V3v','V3d','hV4','OPA','PPA','RSC'};
 combinedRoiNames = {'V1','V2','V3','hV4','OPA','PPA','RSC'};
@@ -15,6 +15,9 @@ curPrf = ['/bwdata/NSDData/Seohee/Symmetry/prfsample_' type, '/'];
 totalFstat = {};
 totalpvalue = {};
 totalR2FeatSplit = {};
+totalR2FeatSplit_par = {};
+totalR2FeatSplit_mir = {};
+totalR2FeatSplit_tap = {};
 totalaicFeatSplit = {};
 totalbicFeatSplit = {};
     for isub = 1:8
@@ -22,16 +25,21 @@ totalbicFeatSplit = {};
         load([curPrf 'voxModelPref_' type '_sub' num2str(isub) '.mat']);
 
         %% total values of R2, aic, bic
-        totalFstat{end+1} = roiFeat;
-        totalpvalue{end+1} = roiFeat_p;
+        totalFstat{end+1} = roiFstat;
+        totalpvalue{end+1} = roiFstat_p;
         totalR2FeatSplit{end+1} = roiNsdFeatR2;
+        totalR2FeatSplit_par{end+1} = roiNsdFeatR2_par;
+        totalR2FeatSplit_mir{end+1} = roiNsdFeatR2_mir;
+        totalR2FeatSplit_tap{end+1} = roiNsdFeatR2_tap;
         totalaicFeatSplit{end+1} = allaicFeatSplit;
         totalbicFeatSplit{end+1} = allbicFeatSplit;
     end
 
 %% R2
-fieldsCon = fieldnames(totalR2FeatSplit);
 allroiR2FeatSplit=[];
+allroiR2FeatSplit_par=[];
+allroiR2FeatSplit_mir=[];
+allroiR2FeatSplit_tap=[];
 V1R2FeatSplit = [];
 V2R2FeatSplit = [];
 V3R2FeatSplit = [];
@@ -39,45 +47,58 @@ V4R2FeatSplit = [];
 OPAR2FeatSplit=[];
 PPAR2FeatSplit=[];
 RSCR2FeatSplit=[];
-for i = 1:numel(fieldsCon)
-    curRoiR2FeatSplit = [];
-    curV1R2FeatSplit = [];
-    curV2R2FeatSplit = [];
-    curV3R2FeatSplit = [];
-    curV4R2FeatSplit = [];
-    curOPAR2FeatSplit = [];
-    curPPAR2FeatSplit = [];
-    curRSCR2FeatSplit = [];
+curRoiR2FeatSplit = [];
+curRoiR2FeatSplit_par=[];
+curRoiR2FeatSplit_mir=[];
+curRoiR2FeatSplit_tap=[];
+curV1R2FeatSplit = [];
+curV2R2FeatSplit = [];
+curV3R2FeatSplit = [];
+curV4R2FeatSplit = [];
+curOPAR2FeatSplit = [];
+curPPAR2FeatSplit = [];
+curRSCR2FeatSplit = [];
 
-    for sub = 1:numel(totalR2FeatSplit.(fieldsCon{i}))
+    for sub = 1:8
         for roi = 1:size(roiNsdFeatR2,2)
-            curRoiR2FeatSplit = [curRoiR2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{roi}(3,:)];
+            curRoiR2FeatSplit = [curRoiR2FeatSplit, totalR2FeatSplit{sub}{roi}(3,:)];
+            curRoiR2FeatSplit_par = [curRoiR2FeatSplit_par, totalR2FeatSplit_par{sub}{roi}(3,:)];
+            curRoiR2FeatSplit_mir = [curRoiR2FeatSplit_mir, totalR2FeatSplit_mir{sub}{roi}(3,:)];
+            curRoiR2FeatSplit_tap = [curRoiR2FeatSplit_tap, totalR2FeatSplit_tap{sub}{roi}(3,:)];
         end
-        curV1R2FeatSplit = [curV1R2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{1}(3,:)];
-        curV2R2FeatSplit = [curV2R2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{2}(3,:)];
-        curV3R2FeatSplit = [curV3R2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{3}(3,:)];
-        curV4R2FeatSplit = [curV4R2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{4}(3,:)];
-        curOPAR2FeatSplit = [curOPAR2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{5}(3,:)];
-        curPPAR2FeatSplit = [curPPAR2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{6}(3,:)];
-        curRSCR2FeatSplit = [curRSCR2FeatSplit, totalR2FeatSplit.(fieldsCon{i}){sub}{7}(3,:)];
+        curV1R2FeatSplit = [curV1R2FeatSplit, totalR2FeatSplit{sub}{1}(3,:)];
+        curV2R2FeatSplit = [curV2R2FeatSplit, totalR2FeatSplit{sub}{2}(3,:)];
+        curV3R2FeatSplit = [curV3R2FeatSplit, totalR2FeatSplit{sub}{3}(3,:)];
+        curV4R2FeatSplit = [curV4R2FeatSplit, totalR2FeatSplit{sub}{4}(3,:)];
+        curOPAR2FeatSplit = [curOPAR2FeatSplit, totalR2FeatSplit{sub}{5}(3,:)];
+        curPPAR2FeatSplit = [curPPAR2FeatSplit, totalR2FeatSplit{sub}{6}(3,:)];
+        curRSCR2FeatSplit = [curRSCR2FeatSplit, totalR2FeatSplit{sub}{7}(3,:)];
     end
-    writematrix(curRoiR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/allroiR2', '_', (fieldsCon{i}), '.csv']);
-    writematrix(curV4R2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/V4R2_', (fieldsCon{i}), '.csv']);
-    writematrix(curOPAR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/OPAR2_', (fieldsCon{i}), '.csv']);
-    writematrix(curPPAR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/PPAR2_', (fieldsCon{i}), '.csv']);
-    writematrix(curRSCR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/RSCR2_', (fieldsCon{i}), '.csv']);
+    writematrix(curRoiR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/allroiR2', '_',  '.csv']);
+    writematrix(curRoiR2FeatSplit_par', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/allroiR2_par', '_', '.csv']);
+    writematrix(curRoiR2FeatSplit_mir', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/allroiR2_mir', '_', '.csv']);
+    writematrix(curRoiR2FeatSplit_tap', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/allroiR2_tap', '_', '.csv']);
 
-    allroiR2FeatSplit(i) = mean(curRoiR2FeatSplit, 'omitnan');
-    V1R2FeatSplit(i) = mean(curV1R2FeatSplit,'omitnan');
-    V2R2FeatSplit(i) = mean(curV2R2FeatSplit,'omitnan');
-    V3R2FeatSplit(i) = mean(curV3R2FeatSplit,'omitnan');
-    V4R2FeatSplit(i) = mean(curV4R2FeatSplit,'omitnan');
-    OPAR2FeatSplit(i) = mean(curOPAR2FeatSplit,'omitnan');
-    PPAR2FeatSplit(i) = mean(curPPAR2FeatSplit,'omitnan');
-    RSCR2FeatSplit(i) = mean(curRSCR2FeatSplit,'omitnan');
-end
+    writematrix(curV4R2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/V4R2_', '.csv']);
+    writematrix(curOPAR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/OPAR2_', '.csv']);
+    writematrix(curPPAR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/PPAR2_', '.csv']);
+    writematrix(curRSCR2FeatSplit', ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/RSCR2_', '.csv']);
 
- save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/', 'meanR2.mat']), "allroiR2FeatSplit", "V1R2FeatSplit", "V2R2FeatSplit","V3R2FeatSplit", "V4R2FeatSplit", "OPAR2FeatSplit", "PPAR2FeatSplit", "RSCR2FeatSplit");
+    allroiR2FeatSplit = mean(curRoiR2FeatSplit, 'omitnan');
+    allroiR2FeatSplit_par = mean(curRoiR2FeatSplit_par, 'omitnan');
+    allroiR2FeatSplit_mir = mean(curRoiR2FeatSplit_mir, 'omitnan');
+    allroiR2FeatSplit_tap = mean(curRoiR2FeatSplit_tap, 'omitnan');
+    V1R2FeatSplit = mean(curV1R2FeatSplit,'omitnan');
+    V2R2FeatSplit = mean(curV2R2FeatSplit,'omitnan');
+    V3R2FeatSplit = mean(curV3R2FeatSplit,'omitnan');
+    V4R2FeatSplit = mean(curV4R2FeatSplit,'omitnan');
+    OPAR2FeatSplit = mean(curOPAR2FeatSplit,'omitnan');
+    PPAR2FeatSplit = mean(curPPAR2FeatSplit,'omitnan');
+    RSCR2FeatSplit = mean(curRSCR2FeatSplit,'omitnan');
+
+
+ save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/', 'meanR2.mat']), "allroiR2FeatSplit", "allroiR2FeatSplit_par", "allroiR2FeatSplit_mir", "allroiR2FeatSplit_tap", ...
+     "V1R2FeatSplit", "V2R2FeatSplit","V3R2FeatSplit", "V4R2FeatSplit", "OPAR2FeatSplit", "PPAR2FeatSplit", "RSCR2FeatSplit");
 
 
 %% AIC/BIC
@@ -169,11 +190,10 @@ end
 % save(fullfile(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_', type, '/', 'positiveR2Count.mat']), "positiveCount")
 %% make a brain volume
 
-for method = 1:3
 
     for isub = 1:8
-        fprintf('isub:%d. con:%d. ...\n',isub,method);
-        load([curPrf 'voxModelPref_' methods{method} '_sub' num2str(isub) '.mat']);
+        fprintf('isub:%d. con:%s. ...\n',isub,type);
+        load([curPrf 'voxModelPref_' type '_sub' num2str(isub) '.mat']);
         % save all ROIs to create overlay
         roifolder = ['/bwdata/NSDData/nsddata/ppdata/subj0' num2str(isub) '/func1pt8mm/'];
         visualRoisFile = fullfile(roifolder,'roi/prf-visualrois.nii.gz');%V1v, V1d, V2v, V2d, V3v, V3d, and hV4
@@ -195,7 +215,7 @@ for method = 1:3
         ourBrain(ourBrain == 10) = 7;
 
 
-        % make a brain volume
+        % Fstat
         newBrain = ourBrain;
         newBrain(newBrain <= 0) = NaN;
         newBrain(newBrain > 0) = 0;
@@ -206,7 +226,21 @@ for method = 1:3
             % elseif visualRegion == 3
             %     curOurBrain(visRoiData == 5 | visRoiData == 6) = 3;
             % end
-            newBrain(curOurBrain == visualRegion) = roiFeat{visualRegion}(3,:);
+            newBrain(curOurBrain == visualRegion) = roiFstat{visualRegion}(3,:);
+        end
+
+        % pvalue
+        newBrain_p = ourBrain;
+        newBrain_p(newBrain_p <= 0) = NaN;
+        newBrain_p(newBrain_p > 0) = 0;
+        for visualRegion = 1:7
+            curOurBrain = ourBrain;
+            % if visualRegion == 2
+            %     curOurBrain(visRoiData == 3 | visRoiData == 4) = 2;
+            % elseif visualRegion == 3
+            %     curOurBrain(visRoiData == 5 | visRoiData == 6) = 3;
+            % end
+            newBrain_p(curOurBrain == visualRegion) = roiFstat_p{visualRegion}(3,:);
         end
         %
         % for visualRegion = 1:4
@@ -262,8 +296,8 @@ for method = 1:3
         % load(['oriBrain_sub', num2str(isub), '.mat']);
         info_old = niftiinfo(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Orientation/brainVolume/betas_session01_sub', num2str(isub),'.nii.gz']);
 
-        niftiwrite(newBrain,[savefolder, '/', methods{method}, 'Brain_sub', num2str(isub),'.nii']);
-        info_new = niftiinfo([savefolder, '/', methods{method}, 'Brain_sub', num2str(isub),'.nii']);
+        niftiwrite(newBrain,[savefolder, '/', type, 'Brain_sub', num2str(isub),'.nii']);
+        info_new = niftiinfo([savefolder, '/', type, 'Brain_sub', num2str(isub),'.nii']);
         info_new.PixelDimensions = [1.8, 1.8, 1.8];
         info_new.TransformName = info_old.TransformName;
         info_new.SpatialDimension = info_old.SpatialDimension;
@@ -276,27 +310,10 @@ for method = 1:3
         info_new.raw.srow_x = info_old.raw.srow_x;
         info_new.raw.srow_y = info_old.raw.srow_y;
         info_new.raw.srow_z = info_old.raw.srow_z;
-        niftiwrite(newBrain,[savefolder, '/', methods{method}, 'Brain_sub', num2str(isub),'.nii'], info_new);
+        niftiwrite(newBrain,[savefolder, '/', type, 'Brain_sub', num2str(isub),'.nii'], info_new);
 
-        % niftiwrite(newBrainbyROI,[savefolder, '/', condition{con}, 'BrainbyROI_sub', num2str(isub),'.nii']);
-        % info_new = niftiinfo([savefolder, '/', condition{con}, 'BrainbyROI_sub', num2str(isub),'.nii']);
-        % info_new.PixelDimensions = info_old.PixelDimensions;
-        % info_new.TransformName = info_old.TransformName;
-        % info_new.SpatialDimension = info_old.SpatialDimension;
-        % info_new.Transform = info_old.Transform;
-        % info_new.Qfactor = info_old.Qfactor;
-        % info_new.AuxiliaryFile = info_old.AuxiliaryFile;
-        % info_new.raw.pixdim = info_old.raw.pixdim;
-        % info_new.raw.aux_file = info_old.raw.aux_file;
-        % info_new.raw.sform_code = info_old.raw.sform_code;
-        % info_new.raw.srow_x = info_old.raw.srow_x;
-        % info_new.raw.srow_y = info_old.raw.srow_y;
-        % info_new.raw.srow_z = info_old.raw.srow_z;
-        % niftiwrite(newBrainbyROI,[savefolder, '/', condition{con}, 'BrainbyROI_sub', num2str(isub),'.nii'],info_new);
-
-
-        niftiwrite(r2Brain,[savefolder, '/', methods{method}, 'BrainR2_sub', num2str(isub),'.nii']);
-        info_new = niftiinfo([savefolder, '/', methods{method}, 'BrainR2_sub', num2str(isub),'.nii']);
+        niftiwrite(newBrain_p,[savefolder, '/', type, 'Brain_p_sub', num2str(isub),'.nii']);
+        info_new = niftiinfo([savefolder, '/', type, 'Brain_p_sub', num2str(isub),'.nii']);
         info_new.PixelDimensions = [1.8, 1.8, 1.8];
         info_new.TransformName = info_old.TransformName;
         info_new.SpatialDimension = info_old.SpatialDimension;
@@ -309,12 +326,29 @@ for method = 1:3
         info_new.raw.srow_x = info_old.raw.srow_x;
         info_new.raw.srow_y = info_old.raw.srow_y;
         info_new.raw.srow_z = info_old.raw.srow_z;
-        niftiwrite(r2Brain,[savefolder, '/', methods{method}, 'BrainR2_sub', num2str(isub),'.nii'],info_new);
+        niftiwrite(newBrain_p,[savefolder, '/', type, 'Brain_p_sub', num2str(isub),'.nii'], info_new);
+
+        
+        niftiwrite(r2Brain,[savefolder, '/', type, 'BrainR2_sub', num2str(isub),'.nii']);
+        info_new = niftiinfo([savefolder, '/', type, 'BrainR2_sub', num2str(isub),'.nii']);
+        info_new.PixelDimensions = [1.8, 1.8, 1.8];
+        info_new.TransformName = info_old.TransformName;
+        info_new.SpatialDimension = info_old.SpatialDimension;
+        info_new.Transform = info_old.Transform;
+        info_new.Qfactor = info_old.Qfactor;
+        info_new.AuxiliaryFile = info_old.AuxiliaryFile;
+        info_new.raw.pixdim = info_old.raw.pixdim;
+        info_new.raw.aux_file = info_old.raw.aux_file;
+        info_new.raw.sform_code = info_old.raw.sform_code;
+        info_new.raw.srow_x = info_old.raw.srow_x;
+        info_new.raw.srow_y = info_old.raw.srow_y;
+        info_new.raw.srow_z = info_old.raw.srow_z;
+        niftiwrite(r2Brain,[savefolder, '/', type, 'BrainR2_sub', num2str(isub),'.nii'],info_new);
 
 
 
     end
-end
+
 
 
 % Load CSV files
@@ -333,3 +367,7 @@ end
 % writematrix(control_R2, '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Orientation/analyses/allroiR2control.csv');
 % writematrix(new_R2, '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Orientation/analyses/allroiR2ori.csv');
 %%
+r2_contour = load('/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_contour/meanR2.mat');
+r2_medialAxis = load('/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_medialAxis/meanR2.mat');
+r2_area = load('/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/analyses_area/meanR2.mat');
+allR2 = [r2_contour.allroiR2FeatSplit, r2_medialAxis.allroiR2FeatSplit, r2_area.allroiR2FeatSplit];

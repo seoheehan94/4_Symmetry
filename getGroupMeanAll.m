@@ -2,42 +2,49 @@
 % For the group map, we computed the circular mean across subjects for each vertex in V1–V4, 
 % weighted by the full model R2 values.
 clear all;
-type = 'par'; %'par', 'mir', 'taper'
+type = 'contour'; %'contour', 'medialAxis', 'area'
 
 filedir = ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/surfaceData_' type, '/'];
 methods = {'contour', 'medialAxis', 'area'};
 
 addpath(genpath('/usr/local/freesurfer/7.4.1/matlab'));
-[~,M,mr] = load_mgh(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/surfaceData_' type, '/sub1/contourBrain_sub1_lh_fsaverage.mgh']);
+[~,M,mr] = load_mgh(['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/surfaceData_' type, '/sub1/' type, 'Brain_sub1_lh_fsaverage.mgh']);
 
 % cutoff
-cutoff_lh = 0.02;
-cutoff_rh = 0.1;
+cutoff_lh = 0;
+cutoff_rh = 0;
 
 % number of voxels survived
 cutNumVoxel_lh = [];
 cutNumVoxel_rh = [];
 
 for curcond = 1:3
-    %% get all subjects volume in radians
+    %% get all subjects volume 
     % what to do with -1 and 0?
     for isub=1:8
-        vol_lh(:,isub) = load_mgh([filedir, 'sub', num2str(isub), '/', methods{curcond}, 'Brain_sub', num2str(isub), '_lh_fsaverage.mgh']);
-        vol_rh(:,isub) = load_mgh([filedir, 'sub', num2str(isub), '/', methods{curcond}, 'Brain_sub', num2str(isub), '_rh_fsaverage.mgh']);
+        vol_lh(:,isub) = load_mgh([filedir, 'sub', num2str(isub), '/', type, 'Brain_sub', num2str(isub), '_lh_fsaverage.mgh']);
+        vol_rh(:,isub) = load_mgh([filedir, 'sub', num2str(isub), '/', type, 'Brain_sub', num2str(isub), '_rh_fsaverage.mgh']);
     end
     
 
     %% get all subjects full model R2 values
     % what to do with -1 and 0?
     for isub=1:8
-        R2_lh(:,isub) = load_mgh([filedir, 'sub', num2str(isub), '/', methods{curcond}, 'BrainR2_sub', num2str(isub), '_lh_fsaverage.mgh']);
-        R2_rh(:,isub) = load_mgh([filedir, 'sub', num2str(isub), '/', methods{curcond}, 'BrainR2_sub', num2str(isub), '_rh_fsaverage.mgh']);
+        R2_lh(:,isub) = load_mgh([filedir, 'sub', num2str(isub), '/', type, 'BrainR2_sub', num2str(isub), '_lh_fsaverage.mgh']);
+        R2_rh(:,isub) = load_mgh([filedir, 'sub', num2str(isub), '/', type, 'BrainR2_sub', num2str(isub), '_rh_fsaverage.mgh']);
     end
 
-
+ %% get all subjects full model p values
+    % what to do with -1 and 0?
+    for isub=1:8
+        p_lh(:,isub) = load_mgh([filedir, 'sub', num2str(isub), '/', type, 'Brain_p_sub', num2str(isub), '_lh_fsaverage.mgh']);
+        p_rh(:,isub) = load_mgh([filedir, 'sub', num2str(isub), '/', type, 'Brain_p_sub', num2str(isub), '_rh_fsaverage.mgh']);
+    end
     %% weighted mean
     symPref_lh = [];
     symPref_rh = [];
+    symPref_p_lh = [];
+    symPref_p_rh = [];
     
     % Set Negative R² Values to Zero
     R2_lh_nonnegative = R2_lh;
@@ -48,31 +55,46 @@ for curcond = 1:3
     for ivox=1:size(vol_lh,1)
         weights = R2_lh_nonnegative(ivox, :).';
         curVol_lh = vol_lh(ivox, :).';
+        curp_lh = p_lh(ivox, :).';
         % Create a logical mask where both curVol_lh and weights are non-NaN
         validMask = ~isnan(curVol_lh) & ~isnan(weights);
+        validMask_p = ~isnan(curp_lh) & ~isnan(weights);
         % Apply the mask to filter out NaN values
         filteredVol = curVol_lh(validMask);
         filteredWeights = weights(validMask);
 
+        filteredp = curp_lh(validMask_p);
+        filteredWeights_p = weights(validMask_p);
+
         if all(isnan(weights))
             symPref_lh(ivox) = NaN;
+            symPref_p_lh(ivox) = NaN;
         else
             symPref_lh(ivox) = mean(filteredVol, 'Weights', filteredWeights);
+            symPref_p_lh(ivox) = mean(filteredp, 'Weights', filteredWeights_p);
         end
     end
     for ivox=1:size(vol_rh,1)
         weights = R2_rh_nonnegative(ivox, :).';
         curVol_rh = vol_rh(ivox, :).';
+        curp_rh = p_rh(ivox, :).';
         % Create a logical mask where both curVol_lh and weights are non-NaN
         validMask = ~isnan(curVol_rh) & ~isnan(weights);
+        validMask_p = ~isnan(curp_rh) & ~isnan(weights);
         % Apply the mask to filter out NaN values
         filteredVol = curVol_rh(validMask);
         filteredWeights = weights(validMask);
 
+        filteredp = curp_rh(validMask_p);
+        filteredWeights_p = weights(validMask_p);
+
+
         if all(isnan(weights))
             symPref_rh(ivox) = NaN;
+            symPref_p_rh(ivox) = NaN;
         else
             symPref_rh(ivox) = mean(filteredVol, 'Weights', filteredWeights);
+            symPref_p_rh(ivox) = mean(filteredp, 'Weights', filteredWeights_p);
         end
     end
    
@@ -87,7 +109,11 @@ for curcond = 1:3
     R2cutoff_symPref_lh(meanR2_lh < cutoff_lh) = NaN;
     R2cutoff_symPref_rh = symPref_rh;
     R2cutoff_symPref_rh(meanR2_rh < cutoff_rh) = NaN;
-    
+
+    R2cutoff_symPref_p_lh = symPref_p_lh;
+    R2cutoff_symPref_p_lh(meanR2_lh < cutoff_lh) = NaN;
+    R2cutoff_symPref_p_rh = symPref_p_rh;
+    R2cutoff_symPref_p_rh(meanR2_rh < cutoff_rh) = NaN;
     % R2cutoff_symPref_lh(R2cutoff_symPref_lh>100)= NaN;
     % R2cutoff_symPref_rh(R2cutoff_symPref_rh>100)= NaN;
     % R2cutoff_symPref_lh(R2cutoff_symPref_lh<-100)= NaN;
@@ -99,15 +125,25 @@ for curcond = 1:3
     % writematrix(meanR2_rh_save, ['/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Orientation/analyses/subMeanR_rh', condition{curcond}, '.csv']);
 
     %% save
-    fileName_lh = [filedir, methods{curcond}, 'Brain_groupmean_lh_fsaverage.mgh'];
-    fileName_rh = [filedir, methods{curcond}, 'Brain_groupmean_rh_fsaverage.mgh'];
+    fileName_lh = [filedir, type, 'Brain_groupmean_lh_fsaverage.mgh'];
+    fileName_rh = [filedir, type, 'Brain_groupmean_rh_fsaverage.mgh'];
     save_mgh(symPref_lh, fileName_lh, M,mr);
     save_mgh(symPref_rh, fileName_rh, M,mr);
 
-    fileName_lh = [filedir, methods{curcond}, 'Brain_groupmean_R2cut_lh_fsaverage.mgh'];
-    fileName_rh = [filedir, methods{curcond}, 'Brain_groupmean_R2cut_rh_fsaverage.mgh'];
+    fileName_lh = [filedir, type, 'Brain_groupmean_R2cut_lh_fsaverage.mgh'];
+    fileName_rh = [filedir, type, 'Brain_groupmean_R2cut_rh_fsaverage.mgh'];
     save_mgh(R2cutoff_symPref_lh, fileName_lh, M,mr);
     save_mgh(R2cutoff_symPref_rh, fileName_rh, M,mr);
+
+    fileName_lh = [filedir, type, 'Brain_p_groupmean_lh_fsaverage.mgh'];
+    fileName_rh = [filedir, type, 'Brain_p_groupmean_rh_fsaverage.mgh'];
+    save_mgh(symPref_p_lh, fileName_lh, M,mr);
+    save_mgh(symPref_p_rh, fileName_rh, M,mr);
+
+    fileName_lh = [filedir, type, 'Brain_p_groupmean_R2cut_lh_fsaverage.mgh'];
+    fileName_rh = [filedir, type, 'Brain_p_groupmean_R2cut_rh_fsaverage.mgh'];
+    save_mgh(R2cutoff_symPref_p_lh, fileName_lh, M,mr);
+    save_mgh(R2cutoff_symPref_p_rh, fileName_rh, M,mr);
 end
 
 
