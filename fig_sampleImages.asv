@@ -1,0 +1,272 @@
+%%
+clear all;
+
+img_file = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/mirfilter/mirImg28.mat';
+load(img_file);
+
+%img size
+topLeft = [77, 77];
+imgWidth =360;
+imgHeight = 360;
+
+model.area = imcrop(model.area, [topLeft(1), topLeft(2), imgHeight-1, imgWidth-1]);
+model.contour = imcrop(model.contour, [topLeft(1), topLeft(2), imgHeight-1, imgWidth-1]);
+model.medialAxis = imcrop(model.medialAxis, [topLeft(1), topLeft(2), imgHeight-1, imgWidth-1]);
+
+
+%colormap
+base_cmap = turbo(numCols);  
+cmap = [1 1 1;base_cmap];
+
+
+fig = figure; 
+imagesc(model.area);
+set(gca, 'XTick', [], 'YTick', []);
+box on;colormap(cmap);
+axis image;
+frame = getframe(gca);
+img_ar = frame.cdata;
+LD_coloured = imresize(LD_coloured, [imgHeight, imgWidth]);
+% figure; imshow(LD_img)
+imwrite(LD_coloured, [mainFileName, '_LD_coloured.png']);
+
+
+
+  
+
+imgList = {'img28'};
+imgNum = 1;
+[~, mainFileName, ~] = fileparts(imgList{imgNum});
+numStr = regexp(mainFileName, '\d+', 'match');  % returns a cell array
+imgIdx = str2double(numStr{1});              % convert to number
+
+
+
+%% Line drawing 
+load(['/bwdata/NSDData/stimuli/vecLD/',imgList{imgNum},'.mat']);
+imgLD = renderLinedrawing(vecLD);
+imgLD = squeeze(imgLD(:,:,1)); % use grayscale encoding
+fig=figure; drawLinedrawing(vecLD); box on; set(gca, 'XTick', [],'YTick', []);      % (optional)
+frame = getframe(gca);
+LD_img = frame.cdata;
+LD_img = imresize(LD_img, [imgHeight, imgWidth]);
+imwrite(LD_img,strcat(mainFileName, '_LD.png'));
+
+%% Contour - orientation map
+filename = ['oriImg' num2str(imgIdx) '.mat'];
+load(fullfile(modelOriVecLD_folder, filename), 'oriMap');
+oriMap_cropped = imcrop(oriMap, [topLeft(1), topLeft(2), imgHeight-1, imgWidth-1]);
+reverseIdx = (oriMap_cropped < 0); % Identify values modified in original operation
+oriMap_cropped(reverseIdx) = oriMap_cropped(reverseIdx) + 180; % Add 180 back to reverse the previous operation
+
+% colour scheme
+cmap_with_nan = [cmap; 1 1 1];  % append white as last row
+colorIdxImg = round((oriMap_cropped / 180) * (numCols/2)) + 1;
+colorIdxImg(isnan(colorIdxImg)) = numCols + 1;
+
+fig = figure; 
+imagesc(colorIdxImg);
+set(gca, 'XTick', [], 'YTick', []);
+box on;colormap(cmap_with_nan);
+caxis([1 numCols]); % ensures proper color scaling
+axis image;
+frame = getframe(gca);
+LD_coloured = frame.cdata;
+LD_coloured = imresize(LD_coloured, [imgHeight, imgWidth]);
+% figure; imshow(LD_img)
+imwrite(LD_coloured, [mainFileName, '_LD_coloured.png']);
+
+
+%% Save Contour patch
+rowIdx = strcmp(stimList.imgIdx_name, [mainFileName '.png']);
+
+% Get the row(s)
+matchingRow = stimList(rowIdx, :);
+matchingRow = matchingRow(2,:);
+
+curMask = circshift(circularMask, [matchingRow.xShift,matchingRow.yShift]);
+circleBoundary = curMask & ~imerode(curMask, strel('disk', 1));
+
+[row_cur, col_cur] = find(curMask);
+minRow = min(row_cur);
+maxRow = max(row_cur);
+minCol = min(col_cur);
+maxCol = max(col_cur);
+
+% Create the alpha channel for transparency
+alphaChannel = uint8(255 * curMask); % Alpha channel (255 inside circle, 0 outside)
+croppedAlphaChannel = alphaChannel(minRow:maxRow, minCol:maxCol, :);
+maskedImg = [];
+for channel = 1:3
+    currentChannel = LD_coloured(:,:,channel);  % Extract the channel
+    currentChannel(~curMask) = 255;  % Set background to white
+    currentChannel(circleBoundary) = 0;  % Set boundary to black
+    maskedImg(:,:,channel) = currentChannel; % Store it back in rgbImg
+end
+
+maskedImg = uint8(maskedImg);
+croppedMaskedImg = maskedImg(minRow:maxRow, minCol:maxCol, :);
+
+figure; imagesc(croppedMaskedImg)
+
+outputFile = fullfile([mainFileName,'_Patchcontour.png']);
+imwrite(croppedMaskedImg, outputFile, 'Alpha', croppedAlphaChannel);
+
+%% photo steerable filter - orientation map
+filename = ['pyrImg' num2str(imgIdx) '.mat'];
+load(fullfile(img_file, filename), 'modelOri');
+
+curModelOri = cat(4, modelOri{:});
+curM = squeeze(mean(curModelOri,4));
+curM_cropped = zeros(8,imgHeight, imgWidth);
+for j = 1:8
+    img = squeeze(curM(j, :, :));
+    img_cropped = imcrop(img, [topLeft(1), topLeft(2), imgHeight-1, imgWidth-1]);
+    curM_cropped(j, :, :) = img_cropped;
+end
+% curM=permute(curM, [1 3 2]);
+curM_cropped = curM_cropped - min(curM_cropped(:));
+
+% 1. Generate the summed matrix
+sum_map = squeeze(sum(curM_cropped, 1));
+
+% 2. Define a 256-step linear white-to-red colormap
+n_steps = 256;
+red_channel = ones(n_steps, 1);
+green_channel = linspace(1, 0, n_steps)';
+blue_channel = linspace(1, 0, n_steps)';
+
+custom_cmap = [red_channel, green_channel, blue_channel];
+
+% 3. Plot the map
+fig=figure; 
+imagesc(sum_map);
+colormap(custom_cmap);
+set(gca, 'XTick', [], 'YTick', []);
+axis image;
+exportgraphics(fig, [mainFileName, '_photoSP_combined_map.png'])
+
+%%
+
+% Normalize curM_cropped to 0–1 for overlay (optional, if not already)
+allVals = [];
+for j = 1:8
+    curImg = squeeze(curM_cropped(j,:,:));
+    allVals = [allVals; curImg(:)];
+end
+clim = [min(allVals), max(allVals)];
+
+
+%figure; imshow(curMap)
+% figure; imshow(squeeze(imposeImg(3,:,:,:)))
+
+
+% Plot all images with same color limits
+borderWidth = 3;  % thickness you want
+fig = figure;
+t = tiledlayout(2,4,'Padding','compact','TileSpacing','compact');
+for j = 1:8
+    img = squeeze(curM_cropped(j,:,:));  % H x W
+
+    % Convert to RGB
+    imgRGB = ind2rgb( round(rescale(img)*255)+1, redmap );  % H x W x 3
+
+    % Add thick border directly to RGB image
+    imgRGB(1:borderWidth,:,:) = 0;                      % top
+    imgRGB(end-borderWidth+1:end,:,:) = 0;              % bottom
+    imgRGB(:,1:borderWidth,:) = 0;                      % left
+    imgRGB(:,end-borderWidth+1:end,:) = 0;              % right
+
+    % Display
+    nexttile
+    image(imgRGB);
+    axis image off
+    box off   % border is now built into image itself
+end
+cb = colorbar;
+cb.Layout.Tile = 'east';
+redmap = [ones(256,1), linspace(1,0,256)', linspace(1,0,256)']; % white→red
+colormap(fig, redmap);
+cb.Ticks = [];
+cb.TickLabels = {};
+set(gcf, 'Position', [100 100 1000 550]);
+exportgraphics(fig, [mainFileName, '_photoSP_meanSF_map.png'])
+% exportgraphics(fig, [mainFileName, '_photoSP_meanSF_map2.pdf'])
+
+savedImgs = cell(1,8);  % to store each image as an RGB variable
+for j = 1:8
+       tmpFig = figure('Visible','off');
+    imagesc(squeeze(curM_cropped(j,:,:)), clim);
+    axis image off;
+    colormap(redmap);
+    set(gca, 'XTick', [], 'YTick', []);
+    box on;
+
+    % Capture image exactly like LD_coloured
+    frame = getframe(gca);
+    imgRGB = frame.cdata;
+
+    % (optional) resize to match LD_coloured dimensions
+    imgRGB = imresize(imgRGB, [imgHeight, imgWidth]);
+
+    % Store in cell array
+    savedImgs{j} = imgRGB;
+
+    close(tmpFig);
+end
+
+%% Save photo steerable filter  patch
+% maskedImg = [];
+% for j = 1:8
+%     for channel = 1:3
+% 
+%    currentChannel = squeeze(imposeImg(j, :,:,channel));  % Extract the channel
+%     currentChannel(~curMask) = NaN;  % Set background to white
+%     maskedImg(j, :,:,channel) = currentChannel; % Store it back in rgbImg
+%     end
+% end
+
+ % croppedMaskedImg = maskedImg(:,minRow:maxRow, minCol:maxCol,:);
+% croppedMaskedImg = curM_cropped(:,minRow:maxRow, minCol:maxCol);
+
+croppedMaskedImg = zeros([size(curM_cropped), 3]);
+circleBoundary = curMask & ~imerode(curMask, strel('disk', 2));
+
+for j = 1:8
+    baseImg = squeeze(savedImgs{j});  
+
+    for channel = 1:3
+        currentChannel = baseImg(:,:,channel);  % Extract the channel
+        currentChannel(~curMask) = 255;  % Set background to white
+        currentChannel(circleBoundary) = 0;  % Set boundary to black
+        maskedImg(:,:,channel) = currentChannel; % Store it back in rgbImg
+    end
+
+
+    croppedMaskedImg(j,:,:,:) = maskedImg;
+end
+croppedMaskedImg = uint8(croppedMaskedImg);
+
+croppedMaskedImg = croppedMaskedImg(:,minRow:maxRow, minCol:maxCol,:);
+
+
+% Plot all images with same color limits
+fig = figure;
+t = tiledlayout(2, 4,...
+    'Padding', 'compact', ...   % minimal padding around edges
+    'TileSpacing', 'tight');    % even smaller gaps between tiles
+for j = 1:8
+        nexttile
+        imagesc(squeeze(croppedMaskedImg(j,:,:,:)), 'AlphaData', croppedAlphaChannel); % apply global color scale
+        axis image off;  % remove ticks and preserve aspect ratio
+        box on;
+end
+% cb = colorbar;
+% cb.Layout.Tile = 'east';
+% redmap = [ones(256,1), linspace(1,0,256)', linspace(1,0,256)']; % white→red
+% colormap(fig, redmap);
+% cb.Ticks = [];
+% cb.TickLabels = {};
+set(gcf, 'Position', [100 100 1000 550]);
+exportgraphics(fig, [mainFileName, '_PatchPhotoSP.png'])
+% exportgraphics(fig, [mainFileName, '_PatchPhotoSP2.pdf'])

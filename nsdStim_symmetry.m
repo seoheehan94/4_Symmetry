@@ -109,4 +109,9 @@ for isub=1:8
         end
     end
 end
-
+% 
+% imagesc(model.area)
+% axis off
+% cmap = jet(256);
+% cmap(1,:) = 1;
+% colormap(cmap);

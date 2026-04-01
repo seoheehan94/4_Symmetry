@@ -1,7 +1,6 @@
-% prfSampleModel_new.m
+% prfSampleModel_symmetry.m
 %
 % associated with the following publication: Roth, ZN, Kay, K, and Merriam, EP (2022).
-% Massive natural scene sampling reveals reliable coarse-scale orientation tuning in human V1
 % DOI:
 %
 %   usage: prfSampleModel(1,1)
@@ -63,6 +62,8 @@ switch visualRegion
         rois=9;%PPA
     case 7
         rois=10;%RSC
+    case 8
+        rois=11:12;%LO1, LO2 
 end
 
 
@@ -91,6 +92,11 @@ placeRoiData = niftiread(placesRoisFile);
 visRoiData(placeRoiData == 1) = 8;
 visRoiData(placeRoiData == 2) = 9;
 visRoiData(placeRoiData == 3) = 10;
+
+kastnerFile = fullfile(betasfolder,'roi/Kastner2015.nii.gz');
+kastnerData = niftiread(kastnerFile);
+visRoiData(visRoiData == 0 & kastnerData == 15) = 11; % Label LO1 as 11
+visRoiData(visRoiData == 0 & kastnerData == 14) = 12; % Label LO2 as 12
 
 tic
 %%

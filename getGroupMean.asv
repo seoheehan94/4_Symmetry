@@ -8,7 +8,8 @@ filedir = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/surfaceData/';
 
 %% 1. Build the list of models and their corresponding R2 weights
 methods = {'contour', 'medialAxis', 'area'};
-symTypes = {'mir', 'par', 'tap'};
+symTypes = {'Mirror', 'Parallelism', 'Taper'};
+
 modelList = {};
 weightList = {};
 

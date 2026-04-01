@@ -1,5 +1,5 @@
 clear all;
-method = 'contour'; % Choose from: 'contour', 'medialAxis', 'area'
+method = 'area'; % Choose from: 'contour', 'medialAxis', 'area'
 symTypes = {'par', 'mir', 'tap'};
 
 filedir_base = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/';
