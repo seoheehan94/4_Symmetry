@@ -10,15 +10,16 @@ mirfolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/mirfilter/';%to s
 mirList = dir(mirfolder);
 mirList = mirList(~ismember({mirList(:).name},{'.','..'}));
 
-tapfolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/mirfilter/';%to save model outputs
+tapfolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/stimuli/tapfilter/';%to save model outputs
 tapList = dir(tapfolder);
 tapList = tapList(~ismember({tapList(:).name},{'.','..'}));
 
 savefolder = '/bwlab/Users/SeoheeHan/NSDData/rothzn/nsd/Symmetry/corrBtwMaps/';%to save model outputs
 filePath = fullfile(savefolder, 'results_corrBtwMaps_nonzeros.mat');
-if isfile(filePath)
-    load(filePath, 'allResultsTable');
-end
+
+% if isfile(filePath)
+%     load(filePath, 'allResultsTable');
+% end
 %% --- 2. Process Correlations ---
 
 iimg=0;
@@ -74,4 +75,4 @@ for imgNum=1:length(parList)
   
 end
 
-writetable(allResultsTable, 'results_corrBtwMaps.csv');
+writetable(allResultsTable, [savefolder, 'results_corrBtwMaps.csv']);
